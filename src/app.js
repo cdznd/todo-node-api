@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { getUsers } from './models/User.js';
+import { getUsers, createUser, getUserByName } from './models/User.js';
 import { PORT, MONGO_DB_URL } from './config.js';
 
 const app = express()
@@ -17,12 +17,29 @@ app.get('/status', (request, response) => {
 	response.send('OK')
 })
 
-app.get('/test', (request, response) => {
+// User endpoints
+app.get('/users', async (request, response) => {
 
-	console.log('before get Users');
-	console.log(getUsers);
+	// console.log('before get Users');
+	// console.log(getUsers);
 
-	response.send('ok');
+	// createUser({
+	// 	name: 'Allan Holdsworth',
+	// 	email: 'allan@holdsworth.com',
+	// 	authentication: {
+	// 		salt: 'a',
+	// 		password: 'a',
+	// 		sessionToken: 'a',
+	// 	}
+	// })
+
+	
+	// const users = getUsers();
+
+	const user = await getUsers();
+	console.log(user);
+
+	response.send('OK');
 
 })
 

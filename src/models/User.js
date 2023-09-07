@@ -12,5 +12,12 @@ const UserSchema = new mongoose.Schema({
 
 export const UserModel = mongoose.model('User', UserSchema)
 
+export const createUser = (userData) => new UserModel(userData)
+    .save()
+    .then((user) => {
+        return user.toObject();
+    })
 export const getUsers = () => UserModel.find()
-export const getUserByName = (name) => UserModel.find((user) => user.name === name)
+export const getUserByName = (name) => UserModel.findOne({ name: name })
+export const updateUserById = (id, userData) => UserModel.findByIdAndUpdate(id, userData);
+export const deleteUserById = (id) => UserModel.findOneAndDelete({ _id: id })
