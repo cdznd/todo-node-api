@@ -1,5 +1,5 @@
 Basic API for a todo app
-NODE.js + Express.js
+Node.js + Express.js
 
 *
 Express has no notion of a database. This concept is left up to third-party Node modules, allowing you to interface with nearly any database.
@@ -11,14 +11,19 @@ possible transition to dynamo db
 *
 Authentication is another opinionated area that Express does not venture into. You may use any authentication scheme you wish.
 *
-
-
+Authentication with JWT
 User authentication/autorization system
 
+
+
+
+
+
+
 User
+    name
     email
     password
-    name
 
 Ticket CRUD
     title
