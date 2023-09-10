@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { PORT, MONGO_DB_URL } from './config';
 
-import { authRoutes } from './routes/AuthRoutes'
+import { authRoutes } from './routes/authRoutes'
 
 // Init
 const app = express()

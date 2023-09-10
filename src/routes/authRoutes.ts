@@ -1,13 +1,10 @@
 import { Router, Response, Request } from "express";
+import { signup, login } from "../controllers/authController";
 
 const router = Router()
 
-router.get('/signup', (req: Request, res: Response) => {
-    res.send('SignUp')
-})
+router.post('/signup', signup)
 
-router.get('/login', (req: Request, res: Response) => {
-    res.send('Login')
-})
+router.post('/login', login)
 
 export const authRoutes = router
