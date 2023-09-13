@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
+import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -19,6 +20,20 @@ const UserSchema = new mongoose.Schema({
         minlength: [8, 'Password min lenght is 8.']
     }
 });
+
+// Mongoose Hooks.
+// Function to be triggered right before the doc is saved on the DB.
+UserSchema.pre('save', async function(next){
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+})
+
+// Function to be triggered right after the doc is saved.
+UserSchema.post('save', function(doc, next){
+    console.log('After user creation');
+    next();
+})
 
 export const UserModel = mongoose.model('User', UserSchema)
 
