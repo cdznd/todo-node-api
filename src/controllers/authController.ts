@@ -1,5 +1,9 @@
 import express from 'express';
 import { UserModel, getUserByEmail } from '../models/User';
+import jwt from 'jsonwebtoken'
+import { JWT_SECRET_KEY } from '../config';
+import { Types } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 interface Errors {
     errors: {
@@ -34,6 +38,12 @@ const handleErrors = (err: Errors) => {
 
 }
 
+// 2 hours
+const maxAge = 60 * 60 * 2;
+const createToken = (id: Types.ObjectId) => {
+    return jwt.sign( { id }, JWT_SECRET_KEY, { expiresIn: maxAge } )
+}
+
 export const signup = async (req: express.Request, res: express.Response) => {
 
     const { name, email, password } = req.body;
@@ -55,7 +65,12 @@ export const signup = async (req: express.Request, res: express.Response) => {
             res.status(400).json({errors: 'Email already registered in another account'})
         }else{
             // Create new User
-            const newUser = await UserModel.create({ name, email, password })
+            const newUser = await UserModel.create({ name, email, password });
+            const token = createToken(newUser._id);
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                maxAge: maxAge * 1000
+            });
             res.status(201).json(newUser);
         }
 
@@ -67,5 +82,19 @@ export const signup = async (req: express.Request, res: express.Response) => {
 }
 
 export const login = async (req: express.Request, res: express.Response) => {
+
+    const { email, password } = req.body;
+
+    const user = await getUserByEmail(email);
+
+    if(user){
+
+        // Check password
+        // 
+        if(bcrypt.hash(password, user.salt)){
+            
+        }
+
+    }
 
 }
