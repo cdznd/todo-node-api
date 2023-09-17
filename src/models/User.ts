@@ -1,6 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Model, Document } from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
 import bcrypt from 'bcryptjs';
+
+interface UserDocumentInterface extends Document {
+    name: String,
+    email: String,
+    password: string,
+}
+
+interface UserModelInterface extends Model<UserDocumentInterface> {
+    login(email: String, password: string): UserDocumentInterface; 
+}
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -29,13 +39,27 @@ UserSchema.pre('save', async function(next){
     next();
 })
 
+// statics?
+UserSchema.statics.login = async (email: String, password: string) => {
+    const user = await UserModel.findOne({ email });
+    if(user){
+        const auth = await bcrypt.compare(password, user.password)
+        if(auth){
+            return user;
+        }
+        throw Error('Incorrect Password');
+    }else{
+        throw Error('Email not registered');
+    }
+}
+
 // Function to be triggered right after the doc is saved.
 UserSchema.post('save', function(doc, next){
     console.log('After user creation');
     next();
 })
 
-export const UserModel = mongoose.model('User', UserSchema)
+export const UserModel = mongoose.model<UserDocumentInterface, UserModelInterface>('User', UserSchema)
 
 export const createUser = (userData: Record<string, any>) => new UserModel(userData)
     .save()
