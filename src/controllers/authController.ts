@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { UserModel, getUserByEmail } from '../models/User';
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET_KEY } from '../config';
@@ -34,6 +34,14 @@ const handleErrors = (err: Errors) => {
         })
     }
 
+    if(err.message === 'Email not registered') {
+        errors['email'] = 'Email not registered';
+    }
+
+    if(err.message === 'Incorrect Password') {
+        errors['password'] = 'Incorrect Password';
+    }
+
     return errors;
 
 }
@@ -44,14 +52,10 @@ const createToken = (id: Types.ObjectId) => {
     return jwt.sign( { id }, JWT_SECRET_KEY, { expiresIn: maxAge } )
 }
 
-export const signup = async (req: express.Request, res: express.Response) => {
-
+export const signup = async (req: Request, res: Response) => {
     const { name, email, password } = req.body;
-
     try {
-
         let userAlreadyExists;
-
         // Check for duplicates
         if(email){
             await getUserByEmail(email).then((item) => {
@@ -60,7 +64,6 @@ export const signup = async (req: express.Request, res: express.Response) => {
                 }
             })
         }
-
         if(userAlreadyExists){
             res.status(400).json({errors: 'Email already registered in another account'})
         }else{
@@ -71,30 +74,29 @@ export const signup = async (req: express.Request, res: express.Response) => {
                 httpOnly: true,
                 maxAge: maxAge * 1000
             });
-            res.status(201).json(newUser);
+            res.status(201).json({user: newUser._id});
         }
-
     } catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({errors: errors})
+        res.status(400).json({ errors: handleErrors(err) })
     }
-
 }
 
-export const login = async (req: express.Request, res: express.Response) => {
-
+export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
-    const user = await getUserByEmail(email);
-
-    if(user){
-
-        // Check password
-        // 
-        if(bcrypt.hash(password, user.salt)){
-            
-        }
-
+    try {
+        const user = await UserModel.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: maxAge * 1000
+        });
+        res.status(200).json({ user: user._id })
+    } catch (err) {
+        res.status(400).json({ errors: handleErrors(err) })
     }
+}
 
+export const logout = (req: Request, res: Response) => {
+    res.cookie('jwt', '', { maxAge: 1 })
+    res.send(200)
 }
