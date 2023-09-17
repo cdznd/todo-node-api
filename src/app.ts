@@ -1,14 +1,18 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+
 import { PORT, MONGO_DB_URL } from './config';
 
 import { authRoutes } from './routes/authRoutes'
+import { requireAuth } from './middleware/authMiddleware';
 
 // Init
 const app = express()
 
 // Middlewares
 app.use(express.json());
+app.use(cookieParser());
 
 // DB Connection and Application start
 mongoose.connect(MONGO_DB_URL).then(() => {
@@ -21,32 +25,10 @@ mongoose.connect(MONGO_DB_URL).then(() => {
 	console.log(err)
 })
 
-// Middleware using external routes
+// Middleware using external routes.
 app.use(authRoutes)
 
-// Routes
-app.get('/status', (req: express.Request, res: express.Response) => {
-
-	const audioFile = {};
-
-	// // callback funcions for processAudio
-	// const successProcess = () => {
-	// 	res.send('Success')
-	// }
-
-	const checkUsers = new Promise((resolver: Function, reject: Function) => {
-
-		let findUsers = true;
-
-		if (findUsers) {
-			// Delay to execute the resolver.
-			setTimeout(() => { resolver('56 Users found') }, 5000)
-		} else {
-			reject('Any user found');
-		}
-
-	});
-
-	
-
+// Route to verify is there is an authenticated user.
+app.get('/check_authentication', requireAuth, (req: Request, res: Response) => {
+	res.json({message: 'HEEEEELOOOOO'})
 })
