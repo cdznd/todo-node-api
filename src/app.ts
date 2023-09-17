@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import { PORT, MONGO_DB_URL } from './config';
 
 import { authRoutes } from './routes/authRoutes'
-import { requireAuth } from './middleware/authMiddleware';
+import { checkUser, requireAuth } from './middleware/authMiddleware';
 
 // Init
 const app = express()
@@ -25,10 +25,16 @@ mongoose.connect(MONGO_DB_URL).then(() => {
 	console.log(err)
 })
 
+app.use('*', checkUser)
 // Middleware using external routes.
 app.use(authRoutes)
 
 // Route to verify is there is an authenticated user.
 app.get('/check_authentication', requireAuth, (req: Request, res: Response) => {
-	res.json({message: 'HEEEEELOOOOO'})
+
+	const user = res.locals.user
+
+	const user_name = user.name
+
+	res.json({message: `Currently logged with user ${user.name}, email: ${user.email}`})
 })

@@ -1,6 +1,7 @@
 import mongoose, { Model, Document } from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
 import bcrypt from 'bcryptjs';
+import { ObjectId } from 'mongoose';
 
 interface UserDocumentInterface extends Document {
     name: String,
@@ -68,5 +69,6 @@ export const createUser = (userData: Record<string, any>) => new UserModel(userD
     })
 export const getUsers = () => UserModel.find()
 export const getUserByEmail = async (email: string) => await UserModel.findOne({ email: email })
+export const getUserById = async (id: ObjectId) => await UserModel.findOne({ _id: id })
 export const updateUserById = (id: string, userData: Record<string, any>) => UserModel.findByIdAndUpdate(id, userData);
 export const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id })
