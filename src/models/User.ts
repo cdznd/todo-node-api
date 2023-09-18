@@ -39,10 +39,9 @@ UserSchema.pre('save', async function (next) {
   next()
 })
 
-// statics?
 UserSchema.statics.login = async (email: string, password: string) => {
   const user = await UserModel.findOne({ email })
-  if (user !== null) {
+  if (user != null) {
     const auth = await bcrypt.compare(password, user.password)
     if (auth) {
       return user
@@ -52,12 +51,6 @@ UserSchema.statics.login = async (email: string, password: string) => {
     throw Error('Email not registered')
   }
 }
-
-// Function to be triggered right after the doc is saved.
-UserSchema.post('save', function (doc, next) {
-  console.log('After user creation')
-  next()
-})
 
 export const UserModel = mongoose.model<UserDocumentInterface, UserModelInterface>('User', UserSchema)
 

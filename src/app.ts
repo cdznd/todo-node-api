@@ -26,11 +26,6 @@ mongoose.connect(MONGO_DB_URL).then(() => {
 })
 
 app.use('*', checkUser)
-// Middleware using external routes.
-app.use(authRoutes)
 
-// Route to verify is there is an authenticated user.
-app.get('/check_authentication', requireAuth, (req: Request, res: Response) => {
-  const user = res.locals.user
-  res.json({ message: `Currently logged with user ${user.name}, email: ${user.email}` })
-})
+// Middlewares using external routes.
+app.use(authRoutes)
