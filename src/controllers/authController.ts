@@ -3,6 +3,7 @@ import { UserModel, getUserByEmail } from '../models/User'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET_KEY } from '../config'
 import { type Types } from 'mongoose'
+import { handleErrors } from '../helpers'
 
 interface Errors {
   errors: {
@@ -20,27 +21,6 @@ interface Error {
   path: string
   value?: string
   reason?: string
-}
-
-const handleErrors = (err: Errors) => {
-  const errors: any = {}
-
-  if (err.message.includes('User validation failed')) {
-    // msut fix typescript, destructuring
-    Object.values(err.errors).forEach(({ path, properties }) => {
-      errors[path] = properties.message
-    })
-  }
-
-  if (err.message === 'Email not registered') {
-    errors.email = 'Email not registered'
-  }
-
-  if (err.message === 'Incorrect Password') {
-    errors.password = 'Incorrect Password'
-  }
-
-  return errors
 }
 
 // 2 hours

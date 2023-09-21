@@ -54,11 +54,6 @@ UserSchema.statics.login = async (email: string, password: string) => {
 
 export const UserModel = mongoose.model<UserDocumentInterface, UserModelInterface>('User', UserSchema)
 
-export const createUser: any = async (userData: Record<string, any>) => await new UserModel(userData)
-  .save()
-  .then((user) => {
-    return user.toObject()
-  })
 export const getUsers: any = async () => await UserModel.find()
 export const getUserByEmail: any = async (email: string) => await UserModel.findOne({ email })
 export const getUserById: any = async (id: ObjectId) => await UserModel.findOne({ _id: id })

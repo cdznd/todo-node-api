@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import { PORT, MONGO_DB_URL } from './config'
 
 import { authRoutes } from './routes/authRoutes'
+import { ticketRoutes } from './routes/ticketRoutes'
 import { checkUser, requireAuth } from './middleware/authMiddleware'
 
 // Init
@@ -29,3 +30,4 @@ app.use('*', checkUser)
 
 // Middlewares using external routes.
 app.use(authRoutes)
+app.use(ticketRoutes)

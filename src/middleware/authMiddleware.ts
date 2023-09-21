@@ -5,7 +5,7 @@ import { getUserById } from '../models/User'
 
 export const requireAuth: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt
-  if (token != null) {
+  if (token) {
     jwt.verify(token, JWT_SECRET_KEY, (err: any, decodedToken: string) => {
       if (err != null) {
         res.status(400).json({ error: 'error during token vefirication' })
@@ -20,11 +20,11 @@ export const requireAuth: RequestHandler = (req: Request, res: Response, next: N
 
 export const checkUser: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt
+  if (token) {
 
-  console.log('token');
-  console.log(token);
+    console.log('token');
+    console.log(token);
 
-  if (token != null) {
     jwt.verify(token, JWT_SECRET_KEY, async (err: any, decodedToken: any) => {
       try {
         if (err != null) {
