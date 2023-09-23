@@ -1,9 +1,8 @@
-import { type Request, type Response } from 'express'
+import { NextFunction, type Request, type Response } from 'express'
 import { UserModel, getUserByEmail } from '../models/User'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET_KEY } from '../config'
 import { type Types } from 'mongoose'
-import { handleErrors } from '../helpers'
 
 interface Errors {
   errors: {
@@ -29,36 +28,22 @@ const createToken = (id: Types.ObjectId) => {
   return jwt.sign({ id }, JWT_SECRET_KEY, { expiresIn: maxAge })
 }
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body
   try {
-    let userAlreadyExists
-    // Check for duplicates
-    if (email) {
-      await getUserByEmail(email).then((item: any) => {
-        if (item) {
-          userAlreadyExists = true
-        }
-      })
-    }
+    let userAlreadyExists = await UserModel.findOne({ email })
     if (userAlreadyExists) {
-      res.status(400).json({ errors: 'Email already registered in another account' })
+      res.status(409).send('Email already registered in another account')
     } else {
-      // Create new User
-      const newUser = await UserModel.create({ name, email, password })
-      const token = createToken(newUser._id)
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        maxAge: maxAge * 1000
-      })
+      const newUser = await UserModel.create({ name, email, password }) 
       res.status(201).json({ user: newUser._id })
     }
   } catch (err) {
-    res.status(400).json({ errors: handleErrors(err) })
+    next(err)
   }
 }
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body
   try {
     const user = await UserModel.login(email, password)
@@ -69,7 +54,7 @@ export const login = async (req: Request, res: Response) => {
     })
     res.status(200).json({ user: user._id })
   } catch (err) {
-    res.status(400).json({ errors: handleErrors(err) })
+    next(err)
   }
 }
 

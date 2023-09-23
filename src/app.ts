@@ -1,4 +1,4 @@
-import express, { type Request, type Response } from 'express'
+import express, { NextFunction, type Request, type Response } from 'express'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 
@@ -7,9 +7,10 @@ import { PORT, MONGO_DB_URL } from './config'
 import { authRoutes } from './routes/authRoutes'
 import { ticketRoutes } from './routes/ticketRoutes'
 import { checkUser, requireAuth } from './middleware/authMiddleware'
+import { handleErrors } from './middleware/errorHandlerMiddleware'
 
 // Init
-const app = express()
+export const app = express()
 
 // Middlewares
 app.use(express.json())
@@ -31,3 +32,6 @@ app.use('*', checkUser)
 // Middlewares using external routes.
 app.use(authRoutes)
 app.use(ticketRoutes)
+
+// Defining an Error Handler Middleware.
+app.use(handleErrors)

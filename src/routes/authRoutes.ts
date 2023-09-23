@@ -1,4 +1,4 @@
-import { Router, type RequestHandler, Request, Response } from 'express'
+import { Router, type RequestHandler, Request, Response, NextFunction } from 'express'
 import { signup, login, logout } from '../controllers/authController'
 import { requireAuth } from '../middleware/authMiddleware'
 
