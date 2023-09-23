@@ -3,18 +3,19 @@ import { type Request, type Response, type NextFunction, type RequestHandler } f
 import { JWT_SECRET_KEY } from '../config'
 import { getUserById } from '../models/User'
 
+// Reverify token
 export const requireAuth: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt
   if (token) {
-    jwt.verify(token, JWT_SECRET_KEY, (err: any, decodedToken: string) => {
-      if (err != null) {
-        res.status(400).json({ error: 'error during token vefirication' })
+    jwt.verify(token, JWT_SECRET_KEY, (err: any) => {
+      if (err) {
+        res.status(400).send('Error during token verification')
       } else {
         next()
       }
     })
   } else {
-    res.status(400).json({ error: 'error token not found' })
+    res.status(400).send('Authentication credentials were not provided.')
   }
 }
 

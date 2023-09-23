@@ -33,7 +33,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   try {
     let userAlreadyExists = await UserModel.findOne({ email })
     if (userAlreadyExists) {
-      res.status(409).send('Email already registered in another account')
+      res.status(409).json({'errors': {'email': 'Email already registered in another account'}})
     } else {
       const newUser = await UserModel.create({ name, email, password }) 
       res.status(201).json({ user: newUser._id })
@@ -60,5 +60,5 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const logout = (req: Request, res: Response) => {
   res.cookie('jwt', '', { maxAge: 1 })
-  res.send(200)
+  res.status(200).send('ok')
 }
