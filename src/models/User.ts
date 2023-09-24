@@ -6,6 +6,8 @@ interface UserDocumentInterface extends Document {
   name: string
   email: string
   password: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface UserModelInterface extends Model<UserDocumentInterface> {
@@ -29,6 +31,9 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Password field is empty.'],
     minlength: [8, 'Password min lenght is 8.']
   }
+},
+{
+  timestamps: true
 })
 
 // Mongoose Hooks.
