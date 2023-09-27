@@ -3,7 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: ['**/**/*.test.ts'],
-  verbose: false,
+  verbose: true,
   forceExit: true,
   // clearMocks: true, 
 };
