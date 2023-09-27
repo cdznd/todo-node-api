@@ -3,6 +3,7 @@ import { UserModel, getUserByEmail } from '../models/User'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET_KEY } from '../config'
 import { type Types } from 'mongoose'
+import { omit } from 'lodash'
 
 interface Errors {
   errors: {
@@ -36,7 +37,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
       res.status(409).json({'errors': {'email': 'Email already registered in another account'}})
     } else {
       const newUser = await UserModel.create({ name, email, password }) 
-      res.status(201).json({ user: newUser._id })
+      res.status(201).json(omit(newUser.toJSON(), 'password', '__v'))
     }
   } catch (err) {
     next(err)
