@@ -1,5 +1,5 @@
 import { type Request, type Response, NextFunction } from "express"
-import { handleValidationErrors } from "../helpers/index"
+import { handleValidationErrors } from "../utils/index"
 
 export const handleErrors = ( err: any, req: Request, res: Response, next: NextFunction ) => {
     if( err.name == 'ValidationError' ){

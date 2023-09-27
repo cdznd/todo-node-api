@@ -1,5 +1,5 @@
 import { Router, type RequestHandler, Request, Response, NextFunction } from 'express'
-import { signup, login, logout } from '../controllers/authController'
+import { signup, login, logout, testing } from '../controllers/authController'
 import { requireAuth } from '../middleware/authMiddleware'
 
 const router = Router()
@@ -12,5 +12,7 @@ router.get('/check_authentication', requireAuth, (req: Request, res: Response) =
     const user = res.locals.user
     res.json({ message: `Currently logged with user ${user.name}, email: ${user.email}` })
 })
+
+router.get('/testing', testing as RequestHandler)
 
 export const authRoutes = router

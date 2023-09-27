@@ -62,3 +62,7 @@ export const logout = (req: Request, res: Response) => {
   res.cookie('jwt', '', { maxAge: 1 })
   res.status(200).send('ok')
 }
+
+export const testing = (req: Request, res: Response) => {
+  res.status(200).send({item: 'Hello my frined'})
+}
