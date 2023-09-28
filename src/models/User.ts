@@ -1,74 +1,66 @@
-import mongoose, { Model, Document } from 'mongoose';
-import isEmail from 'validator/lib/isEmail';
-import bcrypt from 'bcryptjs';
-import { ObjectId } from 'mongoose';
+import mongoose, { type Model, type Document, type ObjectId } from 'mongoose'
+import isEmail from 'validator/lib/isEmail'
+import bcrypt from 'bcryptjs'
 
 interface UserDocumentInterface extends Document {
-    name: String,
-    email: String,
-    password: string,
+  name: string
+  email: string
+  password: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface UserModelInterface extends Model<UserDocumentInterface> {
-    login(email: String, password: string): UserDocumentInterface; 
+  login: (email: string, password: string) => UserDocumentInterface
 }
 
 const UserSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Name field is empty.']
-    },
-    email: {
-        type: String,
-        required: [true, 'Email field is empty.'],
-        lowercase: true,
-        unique: true,
-        validate: [ isEmail, 'Email is not valid.']
-    },
-    password: {
-        type: String,
-        required: [true, 'Password field is empty.'],
-        minlength: [8, 'Password min lenght is 8.']
-    }
-});
+  name: {
+    type: String,
+    required: [true, 'Name field is empty']
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    lowercase: true,
+    unique: true,
+    validate: [isEmail, 'Invalid email format']
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    minlength: [8, 'Password must be at least 8 characters']
+  }
+},
+{
+  timestamps: true
+})
 
 // Mongoose Hooks.
 // Function to be triggered right before the doc is saved on the DB.
-UserSchema.pre('save', async function(next){
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
+UserSchema.pre('save', async function (next) {
+  const salt = await bcrypt.genSalt()
+  this.password = await bcrypt.hash(this.password, salt)
+  next()
 })
 
-// statics?
-UserSchema.statics.login = async (email: String, password: string) => {
-    const user = await UserModel.findOne({ email });
-    if(user){
-        const auth = await bcrypt.compare(password, user.password)
-        if(auth){
-            return user;
-        }
-        throw Error('Incorrect Password');
-    }else{
-        throw Error('Email not registered');
+UserSchema.statics.login = async (email: string, password: string) => {
+  const user = await UserModel.findOne({ email })
+  if (user) {
+    const auth = await bcrypt.compare(password, user.password)
+    if (auth) {
+      return user
     }
+    throw new Error('Incorrect username or password')
+  } else {
+    throw new Error('Incorrect username or password')
+  }
 }
-
-// Function to be triggered right after the doc is saved.
-UserSchema.post('save', function(doc, next){
-    console.log('After user creation');
-    next();
-})
 
 export const UserModel = mongoose.model<UserDocumentInterface, UserModelInterface>('User', UserSchema)
 
-export const createUser = (userData: Record<string, any>) => new UserModel(userData)
-    .save()
-    .then((user) => {
-        return user.toObject();
-    })
-export const getUsers = () => UserModel.find()
-export const getUserByEmail = async (email: string) => await UserModel.findOne({ email: email })
-export const getUserById = async (id: ObjectId) => await UserModel.findOne({ _id: id })
-export const updateUserById = (id: string, userData: Record<string, any>) => UserModel.findByIdAndUpdate(id, userData);
-export const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id })
+export const getUsers: any = async () => await UserModel.find()
+export const getUserByEmail: any = async (email: string) => await UserModel.findOne({ email })
+export const getUserById: any = async (id: ObjectId) => await UserModel.findOne({ _id: id })
+export const updateUserById: any = (id: string, userData: Record<string, any>) => UserModel.findByIdAndUpdate(id, userData)
+export const deleteUserById: any = (id: string) => UserModel.findOneAndDelete({ _id: id })
