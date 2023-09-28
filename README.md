@@ -14,11 +14,14 @@ Authentication is another opinionated area that Express does not venture into. Y
 Authentication with JWT
 User authentication/autorization system
 
+Default way to return errors
+"errors": [
+    {
+        "detail": "Authentication credentials were not provided."
+    }
+]
 
-
-
-
-
+Certainly! Here are some test descriptions following the model you provided for various scenarios related to user authentication:
 
 User
     name
@@ -79,7 +82,7 @@ Content-Type: application/json
 **Signup**
 - **URL:** `/signup`
 - **Method:** `POST`
-- **Description:** Creates a new user.
+- **Description:** Creates a new user with a valid email and password.
 - **Parameters:** 
     name (string, required): Name of the user.
     email (string, required, unique): User's Email Address
@@ -93,6 +96,8 @@ Content-Type: application/json
     "email": "test@test.com",
     "password": "password"
 }
+**Response**
+
 
 ### 2. Users Endpoints
 

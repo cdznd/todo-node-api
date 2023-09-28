@@ -6,6 +6,6 @@ export const handleErrors = ( err: any, req: Request, res: Response, next: NextF
       const errors = handleValidationErrors(err)
       res.status(400).json({errors})
     } else {
-      res.status(400).json({errors: [err.message]})
+      res.status(400).json({errors: { details: err.message }})
     }
 }

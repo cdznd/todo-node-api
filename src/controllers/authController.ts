@@ -34,7 +34,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   try {
     let userAlreadyExists = await UserModel.findOne({ email })
     if (userAlreadyExists) {
-      res.status(409).json({'errors': {'email': 'Email already registered in another account'}})
+      res.status(409).json({'errors': {'email': 'Account with this email already exists'}})
     } else {
       const newUser = await UserModel.create({ name, email, password }) 
       res.status(201).json(omit(newUser.toJSON(), 'password', '__v'))
@@ -53,7 +53,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       httpOnly: true,
       maxAge: maxAge * 1000
     })
-    res.status(200).json({ user: user._id })
+    res.status(200).json(omit(user.toJSON(), 'password', '__v'))
   } catch (err) {
     next(err)
   }

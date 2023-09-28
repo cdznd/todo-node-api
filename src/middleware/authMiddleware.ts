@@ -20,7 +20,6 @@ export const requireAuth: RequestHandler = (req: Request, res: Response, next: N
 }
 
 export const checkUser: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-  console.log('CheckUser...')
   const token = req.cookies.jwt
   if (token) {
     jwt.verify(token, JWT_SECRET_KEY, async (err: any, decodedToken: any) => {

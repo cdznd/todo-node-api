@@ -17,19 +17,19 @@ interface UserModelInterface extends Model<UserDocumentInterface> {
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Name field is empty.']
+    required: [true, 'Name field is empty']
   },
   email: {
     type: String,
-    required: [true, 'Email field is empty.'],
+    required: [true, 'Email is required'],
     lowercase: true,
     unique: true,
-    validate: [isEmail, 'Email is not valid.']
+    validate: [isEmail, 'Invalid email format']
   },
   password: {
     type: String,
-    required: [true, 'Password field is empty.'],
-    minlength: [8, 'Password min lenght is 8.']
+    required: [true, 'Password is required'],
+    minlength: [8, 'Password must be at least 8 characters']
   }
 },
 {
@@ -51,9 +51,9 @@ UserSchema.statics.login = async (email: string, password: string) => {
     if (auth) {
       return user
     }
-    throw new Error('Incorrect Password')
+    throw new Error('Incorrect username or password')
   } else {
-    throw new Error('Email not registered')
+    throw new Error('Incorrect username or password')
   }
 }
 

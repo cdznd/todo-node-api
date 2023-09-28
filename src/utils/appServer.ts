@@ -11,9 +11,10 @@ export const createServer = () => {
     app.use(express.json())
     app.use(cookieParser())
 
+    app.use('*', checkUser)
+
     appRoutes(app)
     
-    app.use('*', checkUser)
     app.use(handleErrors)
 
     return app
