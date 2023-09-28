@@ -28,7 +28,7 @@ export const checkUser: RequestHandler = (req: Request, res: Response, next: Nex
           next(err)
           // res.status(400).json({ error: 'error during token vefirication' })
         } else {
-          res.locals.user = await getUserById(decodedToken.id) || res.locals.user;
+          res.locals.user = await getUserById(decodedToken.id) || res.locals.user
           next()
         }
       } catch (err) {
