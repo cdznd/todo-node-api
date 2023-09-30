@@ -2,7 +2,9 @@ import mongoose from 'mongoose'
 import { createServer } from '../utils/appServer'
 import request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { ticketEndpoints } from '../config/endpoints'
+import { ticketEndpoints, authEndpoints } from '../config/endpoints'
+import { before } from 'lodash'
+import { createTicket } from '../controllers/ticketController'
 
 let dbServer: any
 beforeAll(async () => {
@@ -12,7 +14,7 @@ beforeAll(async () => {
 })
 
 afterEach(async () => {
-  await mongoose.connection.collection('users').deleteMany({})
+  await mongoose.connection.collection('tickets').deleteMany({})
 })
 
 const app = createServer()
@@ -24,50 +26,105 @@ const ticketInput = {
   priority: '2'
 }
 
+const userInput = {
+  name: 'User Test',
+  email: 'tester@test.com',
+  password: 'google1234'
+}
+
 describe('Tickets Routes', () => {
+
   describe('Creating a Ticket', () => {
-    describe('User tries to create a new ticket providing all valid data.', () => {
-      it('Should return a 201 Status code with the newly created ticket in the response body', async () => {
 
-        const { statusCode } = await request(app)
-          .post(ticketEndpoints.tickets)
-          .send(ticketInput)
+    describe('Authorized user tests', () => {
 
-        console.log('statusCode')
-        console.log(statusCode)
+      // Authorizing all Users for this test suite
+      let jwtCookie: any;
+      let userId: any;
+
+      beforeAll( async () => {
+        await request(app).post(authEndpoints.signup).send(userInput);
+        const { headers, body: user } = await request(app).post(authEndpoints.login).send({
+          email: userInput.email,
+          password: userInput.password,
+        });
+        jwtCookie = headers['set-cookie'][0];
+        userId = user._id
+
+        console.log(userId)
+        console.log(userId)
+
+      })
+
+      describe('User tries to create a new ticket providing all valid data.', () => {
+        it('Should return a 201 Status code with the newly created ticket in the response body', async () => {
+
+          const { statusCode, body } = await request(app)
+            .post(ticketEndpoints.tickets)
+            .send(ticketInput)
+            .set('Cookie', jwtCookie)
+
+          expect(statusCode).toBe(201)
+          expect(body.title).toBe(ticketInput.title)
+          expect(body.category).toBe(ticketInput.category)
+          expect(body.status).toBe(ticketInput.status)
+          expect(body.priority).toBe(ticketInput.priority)
+          expect(body.user_id).toBe(userId)
+
+        })
+      })
+
+      describe('User tries to create a new ticket without providing mandatory fields', () => {
+        it('Should return a 400 Bad Request status code with an error message indicating which fields are missing', async () => {
+
+          // Title and status field missing
+          const newTicketInput = ticketInput
+          newTicketInput.title = ''
+          newTicketInput.status = ''
+
+          const { statusCode, body } = await request(app)
+            .post(ticketEndpoints.tickets)
+            .send(newTicketInput)
+            .set('Cookie', jwtCookie)
+
+          expect(statusCode).toBe(400)
+          expect(body).toHaveProperty('errors')
+
+          // Assert that title and status field is missing
+          expect(body.errors).toHaveProperty('title')
+          expect(body.errors.title).toBe('Title is required')
+          expect(body.errors).toHaveProperty('status')
+          expect(body.errors.status).toBe('Status is required')
+
+        })
+      })
+
+      // describe('User tries to create a new ticket with an invalid category', () => {
+      //   it('Should return 400 Bad Request status code with an error message indicating that the category field is invalid', () => {
+
+      //   })
+      // })
+
+      // describe('User tries to create a new ticket with an invalid priority', () => {
+      //   it('Should return a 400 Bad Request status code with an error message indicating that the priority field is invalid', () => {
+
+      //   })
+      // })
+
+      // describe('User tries to create a new ticket with an invalid status', () => {
+      //   it('Should return a 400 Bad Request status code with an error message indicating that the status field is invalid', () => {
+
+      //   })
+      // })
+
+    })
+
+    describe('An unauthorized user tries to create a new tickets', () => {
+      it('Should return a 401 Unauthorized user status code, indicating that the user is not authenticated', () => {
 
       })
     })
 
-    // describe('User tries to create a new ticket without providing mandatory fields', () => {
-    //   it('Should return a 400 Bad Request status code with an error message indicating which fields are missing', () => {
-
-    //   })
-    // })
-
-    // describe('User tries to create a new ticket with an invalid category', () => {
-    //   it('Should return 400 Bad Request status code with an error message indicating that the category field is invalid', () => {
-
-    //   })
-    // })
-
-    // describe('User tries to create a new ticket with an invalid priority', () => {
-    //   it('Should return a 400 Bad Request status code with an error message indicating that the priority field is invalid', () => {
-
-    //   })
-    // })
-
-    // describe('User tries to create a new ticket with an invalid status', () => {
-    //   it('Should return a 400 Bad Request status code with an error message indicating that the status field is invalid', () => {
-
-    //   })
-    // })
-
-    // describe('An unauthorized user tries to create a new tickets', () => {
-    //   it('Should return a 401 Unauthorized user status code, indicating that the user is not authenticated', () => {
-
-    //   })
-    // })
   })
 
   // describe('Retrieving and listing tickets', () => {
