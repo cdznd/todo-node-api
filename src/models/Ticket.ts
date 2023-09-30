@@ -32,6 +32,9 @@ const TicketSchema = new mongoose.Schema({
     type: Schema.ObjectId,
     required: [true, 'Must be logged in to create a ticket']
   }
+},
+{
+  timestamps: true
 })
 
 export const TicketModel = mongoose.model<TicketDocumentInterface, TicketModelInterface>('Ticket', TicketSchema)

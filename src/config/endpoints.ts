@@ -9,3 +9,7 @@ export const ticketEndpoints = {
     updateTicket: '/tickets/:ticketId',
     deleteTicket: '/tickets/:ticketId'
 }
+
+export const categoryEndpoints = {
+    categories: '/categories'
+}
