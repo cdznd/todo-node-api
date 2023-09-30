@@ -34,6 +34,10 @@ export const getTicket = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
+export const updateTicket = async (req: Request, res: Response, next: NextFunction) => {
+  
+}
+
 export const deleteTicket = async (req: Request, res: Response, next: NextFunction) => {
   const { ticketId } = req.params
   const currentUser = res.locals.user

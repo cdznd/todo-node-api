@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import { createServer } from '../utils/appServer'
 import request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
+import { authEndpoints } from '../config/endpoints'
 
 let dbServer: any
 beforeAll(async () => {
@@ -27,7 +28,7 @@ describe('Authentication Routes', () => {
     describe('User attempts to register with valid email and password.', () => {
       it('Should return a 201 status code and the created user json', async () => {
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(userInput)
         expect(statusCode).toBe(201)
         expect(header['content-type']).toMatch(/json/)
@@ -39,10 +40,10 @@ describe('Authentication Routes', () => {
     describe('User attempts to register with an existing email', () => {
       it('Should return a 409 status code with a "Account with this email already exists" error message.', async () => {
         // First create a user
-        await request(app).post('/signup').send(userInput)
+        await request(app).post(authEndpoints.signup).send(userInput)
         // Attempt to recreate
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(userInput)
         expect(statusCode).toBe(409)
         expect(header['content-type']).toMatch(/json/)
@@ -55,7 +56,7 @@ describe('Authentication Routes', () => {
         const newUserInput = { ...userInput }
         newUserInput.password = 'weak'
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(newUserInput)
 
         expect(statusCode).toBe(400)
@@ -69,7 +70,7 @@ describe('Authentication Routes', () => {
         const newUserInput = { ...userInput }
         newUserInput.email = ''
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(newUserInput)
         expect(statusCode).toBe(400)
         expect(header['content-type']).toMatch(/json/)
@@ -82,7 +83,7 @@ describe('Authentication Routes', () => {
         const newUserInput = { ...userInput }
         newUserInput.password = ''
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(newUserInput)
         expect(statusCode).toBe(400)
         expect(header['content-type']).toMatch(/json/)
@@ -96,7 +97,7 @@ describe('Authentication Routes', () => {
         newUserInput.password = ''
         newUserInput.email = ''
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(newUserInput)
         expect(statusCode).toBe(400)
         expect(header['content-type']).toMatch(/json/)
@@ -110,7 +111,7 @@ describe('Authentication Routes', () => {
         const newUserInput = { ...userInput }
         newUserInput.email = 'no-valid-email'
         const { header, body, statusCode } = await request(app)
-          .post('/signup')
+          .post(authEndpoints.signup)
           .send(newUserInput)
         expect(statusCode).toBe(400)
         expect(header['content-type']).toMatch(/json/)
@@ -138,10 +139,10 @@ describe('Authentication Routes', () => {
     describe('User attempts to login with a valid username and password.', () => {
       it('Should return a 200 status code and a JWT token.', async () => {
         // Creating a user
-        await request(app).post('/signup').send(userInput)
+        await request(app).post(authEndpoints.signup).send(userInput)
         // Login Attempt
         const { statusCode, headers } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send({
             email: userInput.email,
             password: userInput.password
@@ -156,11 +157,11 @@ describe('Authentication Routes', () => {
 
     describe('User attempts to login with email and password that do not match', () => {
       it('Should return a 401 status code with an "Unauthorized" error message.', async () => {
-        await request(app).post('/signup').send(userInput)
+        await request(app).post(authEndpoints.signup).send(userInput)
         const newUserInput = { ...userInput }
         newUserInput.password = 'no-valid-password'
         const { statusCode, body } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send(newUserInput)
         expect(statusCode).toBe(400)
         expect(body.errors.details).toBe('Incorrect username or password')
@@ -170,7 +171,7 @@ describe('Authentication Routes', () => {
     describe('User attempts to login without providing email', () => {
       it('Should return a 400 status code with a "Email is required" error message.', async () => {
         const { statusCode, body } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send({
             password: userInput.password
           })
@@ -182,7 +183,7 @@ describe('Authentication Routes', () => {
     describe('User attempts to login without providing a password', () => {
       it('Should return a 400 status code with a "Password is required" error message', async () => {
         const { statusCode, body } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send({
             email: userInput.email
           })
@@ -194,7 +195,7 @@ describe('Authentication Routes', () => {
     describe('User attempts to login with an empty email and password', () => {
       it('Should return a 400 status code with a "Username and Password are required" error message', async () => {
         const { statusCode, body } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send({})
         expect(statusCode).toBe(400)
         expect(body.errors.details).toBe('Incorrect username or password')
@@ -203,10 +204,10 @@ describe('Authentication Routes', () => {
 
     describe('User succefully login and tries to use a protected route', () => {
       it('Should return a 200 code with the current user', async () => {
-        await request(app).post('/signup').send(userInput)
+        await request(app).post(authEndpoints.signup).send(userInput)
 
         const { headers: loginHeaders } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send({
             email: userInput.email,
             password: userInput.password
@@ -228,10 +229,10 @@ describe('Authentication Routes', () => {
   describe('User Logout', () => {
     describe('User logs in the account and tries to logout', () => {
       it('Should return a 200 status code with a "Succeful logout" message', async () => {
-        await request(app).post('/signup').send(userInput)
+        await request(app).post(authEndpoints.signup).send(userInput)
 
         const { headers: loginHeaders } = await request(app)
-          .post('/login')
+          .post(authEndpoints.login)
           .send({
             email: userInput.email,
             password: userInput.password
@@ -240,7 +241,7 @@ describe('Authentication Routes', () => {
         const jwtCookie = loginHeaders['set-cookie'][0]
 
         const logOutRequest = await request(app)
-          .get('/logout')
+          .get(authEndpoints.logout)
           .set('Cookie', jwtCookie)
 
         const logOutMaxAgeMatch = logOutRequest.headers['set-cookie'][0].match(/Max-Age=(\d+)/)[0]
