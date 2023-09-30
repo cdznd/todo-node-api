@@ -16,10 +16,21 @@ afterEach(async () => {
 
 const app = createServer()
 
+const ticketInput = {
+  title: 'New WebSite',
+  category: 'WebDevelopment',
+  status: '1',
+  priority: '2'
+}
+
 describe('Tickets Routes', () => {
   describe('Creating a Ticket', () => {
     describe('User tries to create a new ticket providing all valid data.', () => {
-      it('Should return a 201 Created status code with the newly created ticket in the response body', () => {
+      it('Should return a 201 Created status code with the newly created ticket in the response body', async () => {
+
+        const response = request(app)
+          .post('/tickets')
+          .send(ticketInput)
 
       })
     })
