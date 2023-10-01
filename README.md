@@ -19,6 +19,16 @@ Default way to return errors
         "detail": "Authentication credentials were not provided."
     }
 ]
+          // Desired return shape
+          // "links": {
+          //    "prev": null,
+          //    "next": "https://rover.kubefeature.hearstapps.net/v2/content?page=2"
+          //  },
+          //  "meta": {
+          //    "result_count": 25
+          //  },
+          // "data": []
+
 # Development Steps
 
 install 

@@ -29,6 +29,7 @@ const userInput = {
 
 describe('Category routes', () => {
   describe('Creating a Category', () => {
+
     describe('Authorized user tests', () => {
       let jwtCookie: any
       let userId: any
@@ -83,7 +84,7 @@ describe('Category routes', () => {
   })
 
   describe('Retrieving and listing categories', () => {
-    
+
     describe('Authorized user tests', () => {
       let jwtCookie: any
       let userId: any
@@ -102,16 +103,17 @@ describe('Category routes', () => {
 
         beforeAll(async () => {
 
+          // Creating a bunch of categories before test
           const category_number = 100
 
-          for(let counter = 0; counter < category_number; counter++ ){
-            
+          for (let counter = 0; counter < category_number; counter++) {
+
             await request(app)
               .post(categoryEndpoints.categories)
-              .send({title: `Category ${counter}`})
+              .send({ title: `Category ${counter}` })
               .set('Cookie', jwtCookie)
           }
-          
+
         })
 
         it('Should return a 200 status code and an array of categories in the response body', async () => {
@@ -119,13 +121,58 @@ describe('Category routes', () => {
           const { statusCode, body } = await request(app)
             .get(categoryEndpoints.categories)
             .set('Cookie', jwtCookie)
-            
-          console.log(statusCode)
-          console.log(body)
+
+          expect(statusCode).toBe(200)
+          expect(body.data).toBeInstanceOf(Array)
+          expect(body.data.length).toBeGreaterThan(0)
 
         })
-        // it('Should support pagination and return the specified number of categories per page', () => {
-        // })
+
+        it('Should have links, meta, and data properties in the response body', async () => {
+          const { statusCode, body } = await request(app)
+            .get(categoryEndpoints.categories)
+            .set('Cookie', jwtCookie)
+
+          expect(body).toHaveProperty('links')
+          expect(body).toHaveProperty('meta')
+          expect(body).toHaveProperty('data')
+        })
+
+        it('Should support pagination and return the specified number of categories per page', async () => {
+          const { statusCode, body } = await request(app)
+            .get(categoryEndpoints.categories)
+            .set('Cookie', jwtCookie)
+
+          const itemsPerPage = body.meta.totalItems / body.meta.totalPages
+          expect(body.meta.totalPages).toBe(10)
+          expect(statusCode).toBe(200)
+          expect(body.data.length).toBe(itemsPerPage)
+
+        })
+
+        it('Should support pagination displaying different pages', async () => {
+          const { statusCode, body } = await request(app)
+            .get(`${categoryEndpoints.categories}?page=2`)
+            .set('Cookie', jwtCookie)
+
+          const itemsPerPage = body.meta.totalItems / body.meta.totalPages
+          expect(body.meta.totalPages).toBe(10)
+          expect(statusCode).toBe(200)
+          expect(body.data.length).toBe(itemsPerPage)
+
+        })
+
+        it('Should support pagination displaying different pages with different limits', async () => {
+          const { statusCode, body } = await request(app)
+            .get(`${categoryEndpoints.categories}?page=2&limit=3`)
+            .set('Cookie', jwtCookie)
+
+          // Number of pages when there's 3 items per page = 34 page
+          expect(body.meta.totalPages).toBe(34)
+          expect(statusCode).toBe(200)
+          expect(body.data.length).toBe(3)
+        })
+
       })
 
       describe('An authorized user tries to retrieve a specific category', () => {
@@ -172,7 +219,7 @@ describe('Category routes', () => {
   //   describe('Unauthorized User Tries to Update an Existing Ticket', () => {
   //     it('should return a 401 Unauthorized status code', async () => { })
   //   })
-    
+
   // })
 
 })
