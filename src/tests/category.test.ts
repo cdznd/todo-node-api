@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { type ObjectId } from 'mongoose'
 import { createServer } from '../utils/appServer'
 import request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
@@ -12,7 +12,7 @@ beforeAll(async () => {
 })
 
 afterEach(async () => {
-  await mongoose.connection.collection('tickets').deleteMany({})
+  await mongoose.connection.collection('categories').deleteMany({})
 })
 
 const app = createServer()
@@ -45,7 +45,7 @@ describe('Category routes', () => {
       })
 
       describe('An authorized user tries to create a new category with a valid title.', () => {
-        it('Should return a 201 Status code with the newly created ticket in the response body', async () => {
+        it('Should return a 201 Status code with the newly created category in the response body', async () => {
           const { statusCode, body } = await request(app)
             .post(categoryEndpoints.categories)
             .send(categoryInput)
@@ -99,9 +99,9 @@ describe('Category routes', () => {
         userId = user._id
       })
 
-      describe.only('An authorized user retrieves a pagineted list of categories', () => {
+      describe('An authorized user retrieves a pagineted list of categories', () => {
 
-        beforeAll(async () => {
+        beforeEach(async () => {
 
           // Creating a bunch of categories before test
           const category_number = 100
@@ -128,8 +128,39 @@ describe('Category routes', () => {
 
         })
 
-        it('Should have links, meta, and data properties in the response body', async () => {
+        it('Should have valid categories objects on the response Array', async () => {
           const { statusCode, body } = await request(app)
+            .get(categoryEndpoints.categories)
+            .set('Cookie', jwtCookie)
+
+          const firstItem = body.data[0]
+
+          expect(statusCode).toBe(200)
+          expect(firstItem).toBeInstanceOf(Object)
+
+          expect(firstItem).toHaveProperty('title')
+          expect(firstItem).toHaveProperty('user_id')
+          expect(firstItem).toHaveProperty('createdAt')
+          expect(firstItem).toHaveProperty('updatedAt')
+
+          expect(firstItem.user_id).toBe(userId)
+
+          const secondItem = body.data[1]
+
+          expect(statusCode).toBe(200)
+          expect(secondItem).toBeInstanceOf(Object)
+
+          expect(secondItem).toHaveProperty('title')
+          expect(secondItem).toHaveProperty('user_id')
+          expect(secondItem).toHaveProperty('createdAt')
+          expect(secondItem).toHaveProperty('updatedAt')
+
+          expect(secondItem.user_id).toBe(userId)
+
+        })
+
+        it('Should have links, meta, and data properties in the response body', async () => {
+          const { body } = await request(app)
             .get(categoryEndpoints.categories)
             .set('Cookie', jwtCookie)
 
@@ -176,51 +207,224 @@ describe('Category routes', () => {
       })
 
       describe('An authorized user tries to retrieve a specific category', () => {
-        it('Should return a 200 status code, with the specified category on the response body', () => { })
 
-        it('should retrieve a category by its unique ID', () => { })
+        let categoryId: ObjectId
 
-        it('should retrieve a category by its title', () => { })
+        beforeEach(async () => {
 
-        it('should retrieve a category by the user who created it', () => { })
+          const { body } = await request(app)
+            .post(categoryEndpoints.categories)
+            .send({ title: categoryInput.title })
+            .set('Cookie', jwtCookie)
 
-        it('should handle non-existent categories IDs with a 404 status code', () => { })
+          categoryId = body._id
+
+        })
+
+        it('Should return a 200 status code, with the specified category on the response body', async () => {
+
+          const { statusCode, body } = await request(app)
+            .get(`${categoryEndpoints.categories}/${categoryId}`)
+            .set('Cookie', jwtCookie)
+
+          expect(statusCode).toBe(statusCode)
+          expect(body).toHaveProperty('title')
+          expect(body.title).toBe(categoryInput.title)
+          expect(body.user_id).toBe(userId)
+        })
+
+        // it('should retrieve a category by its unique ID', () => { })
+
+        // it('should retrieve a category by its title', () => { })
+
+        // it('should retrieve a category by the user who created it', () => { })
+
+        it('Should handle non-existent categories IDs with a 404 status code', async () => { 
+          const { statusCode, body } = await request(app)
+            .get(`${categoryEndpoints.categories}/nonexisting`)
+            .set('Cookie', jwtCookie)
+          
+          expect(statusCode).toBe(404)
+          expect(body.errors.details).toBe('Category not found')
+        })
       })
-
-
+      
     })
 
-    // describe('An unauthorized user tries to retrieve a list of categories', () => {
-    //   it('Should return a 401 Unauthorized status code', () => { })
-    //   it('Should not allow unauthorized access to ticket details', () => { })
-    // })
+    describe('An unauthorized user tries to retrieve a list of categories', () => {
+      it('Should return a 401 Unauthorized status code', async () => {
+        const { statusCode, body } = await request(app)
+          .get(`${categoryEndpoints.categories}`)
+        expect(statusCode).toBe(400)
+        expect(body).toBe('Authentication credentials were not provided.')
+      })
+    })
 
-    // describe('An unauthorized user tries to retrieve an specific category', () => {
-    //   it('Should return a 401 Unauthorized status code', () => { })
-    //   it('Should not allow unauthorized access to ticket details', () => { })
-    // })
+    describe('An unauthorized user tries to retrieve an specific category', () => {
+      it('Should return a 401 Unauthorized status code', async () => {
+        const { statusCode, body } = await request(app)
+          .get(`${categoryEndpoints.categories}`)
+        expect(statusCode).toBe(400)
+        expect(body).toBe('Authentication credentials were not provided.')
+      })
+    })
 
   })
 
-  // describe('Updating existing category', () => {
+  describe('Updating existing category', () => {
 
-  //   describe('Authorized user tests', () => {
+    describe('Authorized user tests', () => {
 
-  //     describe('Authorized User Updates an Existing category', () => {
-  //       it('should return a 200 status code with updated category details in the response body', async () => { })
-  //     })
+      let jwtCookie: any
+      let userId: any
+      let categoryId: ObjectId
 
-  //     describe('Authorized User tries to update a Non-Existent Ticket', () => {
-  //       it('should return a 404 status code with an informative message', async () => { })
-  //     })
+      beforeAll(async () => {
+        await request(app).post(authEndpoints.signup).send(userInput)
+        const { headers, body: user } = await request(app).post(authEndpoints.login).send({
+          email: userInput.email,
+          password: userInput.password
+        })
+        jwtCookie = headers['set-cookie'][0]
+        userId = user._id
+      })
 
-  //   })
+      beforeEach(async () => {
 
-  //   describe('Unauthorized User Tries to Update an Existing Ticket', () => {
-  //     it('should return a 401 Unauthorized status code', async () => { })
-  //   })
+        const { body } = await request(app)
+          .post(categoryEndpoints.categories)
+          .send({ title: categoryInput.title })
+          .set('Cookie', jwtCookie)
 
-  // })
+        categoryId = body._id
+
+      })
+
+      describe('Authorized user updates an existing category', () => {
+        it('should return a 200 status code with updated category details in the response body', async () => {
+
+          const { statusCode, body } = await request(app)
+            .put(`${categoryEndpoints.categories}/${categoryId}`)
+            .send({ title: 'NEW TITLE' })
+            .set('Cookie', jwtCookie)
+
+          expect(statusCode).toBe(201)
+          expect(body.modifiedCount).toBe(1)
+
+          // Comparing new category with old one.
+          const { statusCode: newCategoryStatusCode, body: newCategoryBody } = await request(app)
+            .get(`${categoryEndpoints.categories}/${categoryId}`)
+            .set('Cookie', jwtCookie)
+
+          expect(newCategoryStatusCode).toBe(200)
+          expect(newCategoryBody.title).not.toBe(categoryInput.title)
+          expect(newCategoryBody.title).toBe('NEW TITLE')
+
+        })
+      })
+
+      describe('Authorized user tries to update a non-existent ticket', () => {
+        it('Should return a 404 status code with an informative message', async () => {
+          
+          const newCategoryId = new mongoose.Types.ObjectId().toString();
+
+          const { statusCode, body } = await request(app)
+            .put(`${categoryEndpoints.categories}/${newCategoryId}`)
+            .send(categoryInput)
+            .set('Cookie', jwtCookie)
+          
+          expect(statusCode).toBe(404)
+          expect(body).toBe('Category not found')
+
+        })
+      })
+
+    })
+
+    describe('Unauthorized user tries to update a category', () => {
+      it('Should return a 401 Unauthorized status code', async () => {
+        const { statusCode, body } = await request(app)
+          .put(`${categoryEndpoints.categories}/123`)
+          .send({ title: 'NEW TITLE' })
+        expect(statusCode).toBe(400)
+        expect(body).toBe('Authentication credentials were not provided.')
+      })
+    })
+
+  })
+
+  describe('Deleting existing categories', () => {
+
+    describe('Authorized user tests', () => {
+
+      let jwtCookie: any
+      let userId: any
+      let categoryId: ObjectId
+
+      beforeAll(async () => {
+        await request(app).post(authEndpoints.signup).send(userInput)
+        const { headers, body: user } = await request(app).post(authEndpoints.login).send({
+          email: userInput.email,
+          password: userInput.password
+        })
+        jwtCookie = headers['set-cookie'][0]
+        userId = user._id
+      })
+
+      beforeEach(async () => {
+
+        const { body } = await request(app)
+          .post(categoryEndpoints.categories)
+          .send({ title: categoryInput.title })
+          .set('Cookie', jwtCookie)
+
+        categoryId = body._id
+
+      })
+
+      describe('Authorized user delete an existing category', () => {
+        it('Should return a 200 status code with a "Deleted Successfully" message', async () => {
+
+          const { statusCode, body } = await request(app)
+            .delete(`${categoryEndpoints.categories}/${categoryId}`)
+            .set('Cookie', jwtCookie)
+          
+          expect(statusCode).toBe(200)
+          expect(body.deletedCount).toBe(1)
+
+          // Checking the existense of the deleted category
+          const { statusCode: deletedCategoryStatusCode, body: deletedCategoryBody } = await request(app)
+            .get(`${categoryEndpoints.categories}/${categoryId}`)
+            .set('Cookie', jwtCookie)
+
+          expect(deletedCategoryBody).toStrictEqual("Category not found")
+          expect(deletedCategoryStatusCode).toBe(404)
+
+        })
+      })
+
+      describe('Authorized user tries to delete a non-existent category', () => {
+        it('should return a 404 status code with an informative message', async () => {
+          const { statusCode, body } = await request(app)
+            .delete(`${categoryEndpoints.categories}/NOEXISTINGID`)
+            .set('Cookie', jwtCookie)
+          expect(statusCode).toBe(404)
+          expect(body).toStrictEqual("Category not found")
+        })
+      })
+
+    })
+
+    describe('Unauthorized user tries to delete a category', () => {
+      it('Should return a 401 Unauthorized status code', async () => {
+        const { statusCode, body } = await request(app)
+          .delete(`${categoryEndpoints.categories}/123`)
+        expect(statusCode).toBe(400)
+        expect(body).toBe('Authentication credentials were not provided.')
+      })
+    })
+
+  })
 
 })
 

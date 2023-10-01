@@ -1,5 +1,6 @@
 import express, { NextFunction, type Request, type Response } from 'express'
 import { CategoryModel } from '../models/Category'
+import mongoose from 'mongoose'
 
 
 
@@ -27,21 +28,18 @@ export const listCategories = async (req: Request, res: Response, next: NextFunc
 
     const totalCategories = await CategoryModel.countDocuments()
 
-    const totalPages: any = Math.ceil(totalCategories/limit)
+    const totalPages: any = Math.ceil(totalCategories / limit)
     const prevPage = page > 1 ? page - 1 : null;
     const nextPage = page < totalPages ? page + 1 : null;
 
     let links: any = {};
 
-    console.log('Original URL')
-    console.log(req.originalUrl)
-
     const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 
-    if(prevPage) {
+    if (prevPage) {
         links.prev = `${fullUrl}/?page=${prevPage}&limit=${limit}`
     }
-    if(nextPage) {
+    if (nextPage) {
         links.next = `${fullUrl}/?page=${nextPage}&limit=${limit}`
     }
 
@@ -65,10 +63,66 @@ export const listCategories = async (req: Request, res: Response, next: NextFunc
     }
 }
 
-export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const getCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const { id: paramId } = req.params
+    try {
+        if (mongoose.Types.ObjectId.isValid(paramId)) {
+            const categoryId = new mongoose.Types.ObjectId(paramId)
+            const category = await CategoryModel.findOne({ _id: categoryId })
+            if (category) {
+                res.status(200).json(category)
+            } else {
+                res.status(404).json('Category not found')
+            }
+        } else {
+            throw Error('Category not found')
+        }
+    } catch (err) {
+        next(err)
+    }
+}
 
+export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const { title } = req.body
+    const { id: paramId } = req.params
+
+    try {
+        if (mongoose.Types.ObjectId.isValid(paramId)) {
+
+            const categoryId = new mongoose.Types.ObjectId(paramId)
+
+            const categoryExists = await CategoryModel.findOne({ _id: categoryId })
+
+            if (!categoryExists) {
+                res.status(404).json('Category not found')
+            }
+
+            const newCategory = await CategoryModel.updateOne({ _id: categoryId }, { title })
+            res.status(201).json(newCategory)
+        } else {
+            throw Error('Category not found')
+        }
+    } catch (err) {
+        next(err)
+    }
 }
 
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+
+    const { id: categoryId } = req.params
+
+    try {
+
+        const categoryExists = await CategoryModel.findOne({ _id: categoryId })
+
+        if (!categoryExists) {
+            res.status(404).json('Category not found')
+        }
+
+        const deleteStatus = await CategoryModel.deleteOne({ _id: categoryId })
+        res.status(200).json(deleteStatus)
+    } catch (err) {
+        next(err)
+    }
 
 }

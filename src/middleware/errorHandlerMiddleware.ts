@@ -6,6 +6,14 @@ export const handleErrors = (err: any, req: Request, res: Response, next: NextFu
     const errors = handleValidationErrors(err)
     res.status(400).json({ errors })
   } else {
+
+    if( err.message === 'Category not found' ) {
+      res.status(404).json({ errors: {details: err.message }})
+    }
+
+    console.log('error name')
+    console.log(err.name)
+
     res.status(400).json({ errors: { details: err.message } })
   }
 }

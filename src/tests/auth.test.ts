@@ -215,7 +215,6 @@ describe('Authentication Routes', () => {
 
         const jwtCookie = loginHeaders['set-cookie'][0]
         
-        console.log('before running the request')
         const { statusCode, body } = await request(app)
           .get('/check_authentication')
           .set('Cookie', jwtCookie)
