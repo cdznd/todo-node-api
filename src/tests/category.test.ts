@@ -52,7 +52,7 @@ describe('Category routes', () => {
             .set('Cookie', jwtCookie)
           expect(statusCode).toBe(201)
           expect(body.title).toBe(categoryInput.title)
-          expect(body.user_id).toBe(userId)
+          expect(body.created_by).toBe(userId)
         })
       })
 
@@ -139,11 +139,11 @@ describe('Category routes', () => {
           expect(firstItem).toBeInstanceOf(Object)
 
           expect(firstItem).toHaveProperty('title')
-          expect(firstItem).toHaveProperty('user_id')
+          expect(firstItem).toHaveProperty('created_by')
           expect(firstItem).toHaveProperty('createdAt')
           expect(firstItem).toHaveProperty('updatedAt')
 
-          expect(firstItem.user_id).toBe(userId)
+          expect(firstItem.created_by).toBe(userId)
 
           const secondItem = body.data[1]
 
@@ -151,11 +151,11 @@ describe('Category routes', () => {
           expect(secondItem).toBeInstanceOf(Object)
 
           expect(secondItem).toHaveProperty('title')
-          expect(secondItem).toHaveProperty('user_id')
+          expect(secondItem).toHaveProperty('created_by')
           expect(secondItem).toHaveProperty('createdAt')
           expect(secondItem).toHaveProperty('updatedAt')
 
-          expect(secondItem.user_id).toBe(userId)
+          expect(secondItem.created_by).toBe(userId)
 
         })
 
@@ -230,7 +230,7 @@ describe('Category routes', () => {
           expect(statusCode).toBe(statusCode)
           expect(body).toHaveProperty('title')
           expect(body.title).toBe(categoryInput.title)
-          expect(body.user_id).toBe(userId)
+          expect(body.created_by).toBe(userId)
         })
 
         // it('should retrieve a category by its unique ID', () => { })

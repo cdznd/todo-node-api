@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import { createServer } from '../utils/appServer'
 import request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { ticketEndpoints, authEndpoints } from '../config/endpoints'
+import { ticketEndpoints, authEndpoints, categoryEndpoints } from '../config/endpoints'
 import { before } from 'lodash'
 import { createTicket } from '../controllers/ticketController'
 
@@ -19,17 +19,31 @@ afterEach(async () => {
 
 const app = createServer()
 
-const ticketInput = {
-  title: 'New WebSite',
-  category: 'WebDevelopment',
-  status: '1',
-  priority: '2'
-}
-
 const userInput = {
   name: 'User Test',
   email: 'tester@test.com',
   password: 'google1234'
+}
+
+const categories = [
+  'Web 3.0 Project',
+  'GreenLabel',
+  'Scratch',
+  'Prototypes'
+]
+
+const statusOptions = [
+  'In Progress',
+  'Paused',
+  'Blocked',
+  'In Requirements'
+]
+
+const ticketInput = {
+  title: 'New WebSite',
+  category: undefined,
+  status: statusOptions[0],
+  priority: '2'
 }
 
 describe('Tickets Routes', () => {
@@ -41,8 +55,10 @@ describe('Tickets Routes', () => {
       // Authorizing all Users for this test suite
       let jwtCookie: any;
       let userId: any;
+      const createdCategories: Array<string> = []
 
       beforeAll(async () => {
+        // Use Authenticated user
         await request(app).post(authEndpoints.signup).send(userInput);
         const { headers, body: user } = await request(app).post(authEndpoints.login).send({
           email: userInput.email,
@@ -50,23 +66,33 @@ describe('Tickets Routes', () => {
         });
         jwtCookie = headers['set-cookie'][0];
         userId = user._id
+        
+        // Creating some categories before.
+        for (const category of categories) {
+          const { body } = await request(app).post(categoryEndpoints.categories).send({ title: category }).set('Cookie', jwtCookie)
+          createdCategories.push(body._id)
+        }
 
       })
 
       describe('User tries to create a new ticket providing all valid data.', () => {
-        it('Should return a 201 Status code with the newly created ticket in the response body', async () => {
-
+        it.only('Should return a 201 Status code with the newly created ticket in the response body', async () => {
+          
+          const updatedTicketInput = {...ticketInput, category: createdCategories[0] }
+          
           const { statusCode, body } = await request(app)
             .post(ticketEndpoints.tickets)
-            .send(ticketInput)
+            .send(updatedTicketInput)
             .set('Cookie', jwtCookie)
 
           expect(statusCode).toBe(201)
-          expect(body.title).toBe(ticketInput.title)
-          expect(body.category).toBe(ticketInput.category)
-          expect(body.status).toBe(ticketInput.status)
-          expect(body.priority).toBe(ticketInput.priority)
-          expect(body.user_id).toBe(userId)
+          expect(body.title).toBe(updatedTicketInput.title)
+          expect(body.category).toBe(updatedTicketInput.category)
+          expect(createdCategories).toContain(body.category)
+          expect(body.status).toBe(updatedTicketInput.status)
+          expect(statusOptions).toContain(body.status)
+          expect(body.priority).toBe(updatedTicketInput.priority)
+          expect(body.created_by).toBe(userId)
 
         })
       })
