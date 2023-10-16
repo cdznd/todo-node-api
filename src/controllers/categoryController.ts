@@ -9,7 +9,7 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
 
     const currentUser = res.locals.user
     try {
-        const category = await CategoryModel.create({ title, user_id: currentUser._id })
+        const category = await CategoryModel.create({ title, created_by: currentUser._id })
         res.status(201).json(category)
     } catch (err) {
         next(err)

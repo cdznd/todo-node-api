@@ -5,7 +5,7 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
   const { title, category, status, priority } = req.body
   const currentUser = res.locals.user
   try {
-    const ticket = await TicketModel.create({ title, category, status, priority, user_id: currentUser._id })
+    const ticket = await TicketModel.create({ title, category, status, priority, created_by: currentUser._id })
     res.status(201).json(ticket)
   } catch (err) {
     next(err)
