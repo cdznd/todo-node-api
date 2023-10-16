@@ -1,4 +1,5 @@
 import mongoose, { type Document, Schema } from "mongoose";
+import { UserModel } from "./User";
 
 interface CategoryDocumentInterface extends Document {
     title: string
@@ -9,8 +10,9 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         required: [true, 'Title field is required']
     },
-    user_id: {
+    created_by: {
         type: Schema.ObjectId,
+        ref: UserModel,
         required: [true, 'Must be logged in to create a ticket']
     }
 },{

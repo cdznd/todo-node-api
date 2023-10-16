@@ -1,4 +1,6 @@
 import mongoose, { type Model, type ObjectId, Schema } from 'mongoose'
+import { CategoryModel } from './Category'
+import { UserModel } from './User'
 
 interface TicketDocumentInterface extends Document {
   name: string
@@ -17,8 +19,9 @@ const TicketSchema = new mongoose.Schema({
     required: [true, 'Title is required']
   },
   category: {
-    type: String,
-    required: [true, 'A Category is required']
+    type: Schema.ObjectId,
+    ref: CategoryModel,
+    required: [true, 'An existing category is required']
   },
   status: {
     type: String,
@@ -28,8 +31,9 @@ const TicketSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Priority field is required']
   },
-  user_id: {
+  created_by: {
     type: Schema.ObjectId,
+    ref: UserModel,
     required: [true, 'Must be logged in to create a ticket']
   }
 },
