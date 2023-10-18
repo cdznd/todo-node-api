@@ -25,10 +25,12 @@ const TicketSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    required: [true, 'Status is required']
+    enum: ['In Progress', 'Todo', 'In Requirements'],
+    required: [true, 'A valid status is required']
   },
   priority: {
     type: String,
+    enum: ['Low', 'Medium', 'High', 'Critical'],
     required: [true, 'Priority field is required']
   },
   created_by: {
@@ -40,5 +42,17 @@ const TicketSchema = new mongoose.Schema({
 {
   timestamps: true
 })
+
+TicketSchema.pre('save', async function (next) {
+  try {
+    const category = await CategoryModel.findById(this.category);
+    if (!category) {
+      throw new Error('An existing category is required');
+    }
+    next()
+  } catch (error) {
+    next(error)
+  }
+});
 
 export const TicketModel = mongoose.model<TicketDocumentInterface, TicketModelInterface>('Ticket', TicketSchema)

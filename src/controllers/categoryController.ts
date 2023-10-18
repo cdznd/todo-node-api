@@ -24,9 +24,7 @@ interface listCategoriesQueryParams {
 }
 
 export const listCategories = async (req: Request, res: Response, next: NextFunction) => {
-    
     const { meta, links, limit, skipOffset } = await paginateResults(CategoryModel, req)
-
     try {
         const categories = await CategoryModel
             .find({})
@@ -59,7 +57,7 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
                 res.status(404).json('Category not found')
             }
         } else {
-            throw Error('Category not found')
+            res.status(404).json('Category not found')
         }
     } catch (err) {
         next(err)
