@@ -30,7 +30,7 @@ export const listTickets = async (req: Request, res: Response, next: NextFunctio
       meta: {
         totalItems: meta.totalItems,
         totalPages: meta.totalPages,
-        page: meta.page,
+        page: meta.page
       },
       data: tickets
     }
@@ -94,17 +94,17 @@ export const deleteTicket = async (req: Request, res: Response, next: NextFuncti
   const currentUser = res.locals.user
   try {
     if (mongoose.Types.ObjectId.isValid(ticketId)) {
-    const ticketExists = await TicketModel.find({ _id: ticketId, created_by: currentUser._id })
+      const ticketExists = await TicketModel.find({ _id: ticketId, created_by: currentUser._id })
 
-    if (ticketExists) {
-      const deleteStatus = await TicketModel.deleteOne({ _id: ticketId })
-      res.status(200).json(deleteStatus)
-    } else {
-      res.status(404).json('Error Ticket not found')
-    }
+      if (ticketExists) {
+        const deleteStatus = await TicketModel.deleteOne({ _id: ticketId })
+        res.status(200).json(deleteStatus)
+      } else {
+        res.status(404).json('Error Ticket not found')
+      }
     } else {
       res.status(404).json('Ticket not found')
-    } 
+    }
   } catch (err) {
     next(err)
   }

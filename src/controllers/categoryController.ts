@@ -1,4 +1,4 @@
-import express, { type NextFunction, type Request, type Response } from 'express'
+import { type NextFunction, type Request, type Response } from 'express'
 import { CategoryModel } from '../models/Category'
 import mongoose from 'mongoose'
 import { paginateResults } from '../utils'
