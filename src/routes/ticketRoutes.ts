@@ -1,18 +1,19 @@
-import { createTicket, listTickets, getTicket } from '../controllers/ticketController'
-import { Router } from 'express'
+import { createTicket, listTickets, getTicket, deleteTicket, updateTicket } from '../controllers/ticketController'
+import { type RequestHandler, Router } from 'express'
 import { requireAuth } from '../middleware/authMiddleware'
+import { ticketEndpoints } from '../config/endpoints'
 
 const router = Router()
 
 // CREATE
-router.post('/tickets', requireAuth, createTicket)
+router.post(ticketEndpoints.tickets, requireAuth, createTicket as RequestHandler)
+// LIST
+router.get(ticketEndpoints.tickets, requireAuth, listTickets as RequestHandler)
 // READ
-router.get('/tickets', requireAuth, listTickets)
+router.get(`${ticketEndpoints.tickets}/:ticketId`, requireAuth, getTicket as RequestHandler)
 // UPDATE
-router.get('/tickets/:ticketId', requireAuth, getTicket)
+router.put(`${ticketEndpoints.tickets}/:ticketId`, requireAuth, updateTicket as RequestHandler)
 // DELETE
-
-// router.put('/tickets/{id}', )
-// router.delete('/tickets/{id}', )
+router.delete(ticketEndpoints.deleteTicket, requireAuth, deleteTicket as RequestHandler)
 
 export const ticketRoutes = router

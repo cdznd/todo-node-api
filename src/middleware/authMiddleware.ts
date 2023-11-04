@@ -15,7 +15,7 @@ export const requireAuth: RequestHandler = (req: Request, res: Response, next: N
       }
     })
   } else {
-    res.status(400).send('Authentication credentials were not provided.')
+    res.status(400).json('Authentication credentials were not provided.')
   }
 }
 

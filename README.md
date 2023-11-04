@@ -1,40 +1,35 @@
-Basic API for a todo app
-Node.js + Express.js
-
+# Basic API for a todo app
+# Node.js + Express.js
+# Notes
 *
 Express has no notion of a database. This concept is left up to third-party Node modules, allowing you to interface with nearly any database.
-
+*
 Database choosen
 MongoDB + https://mongoosejs.com/
 possible transition to dynamo db
-
 *
 Authentication is another opinionated area that Express does not venture into. You may use any authentication scheme you wish.
 *
 Authentication with JWT
 User authentication/autorization system
-
+*
 Default way to return errors
 "errors": [
     {
         "detail": "Authentication credentials were not provided."
     }
 ]
+          // Desired return shape
+          // "links": {
+          //    "prev": null,
+          //    "next": "https://rover.kubefeature.hearstapps.net/v2/content?page=2"
+          //  },
+          //  "meta": {
+          //    "result_count": 25
+          //  },
+          // "data": []
 
-Certainly! Here are some test descriptions following the model you provided for various scenarios related to user authentication:
-
-User
-    name
-    email
-    password
-
-Ticket CRUD
-    title
-    category
-    status
-    priority
-
-Development Steps
+# Development Steps
 
 install 
 mongoose jsonwebtoken bcrypt bodyparser
@@ -49,8 +44,18 @@ Authentication
 2 - Password Recovery
 3 - Register
 4 - Activation (by email...)
-
-
+# Database Schema
+User
+    name
+    email
+    password
+Ticket
+    title
+    category
+    status
+    priority
+    created_at
+    updated_at
 # My Node.js Express REST API Documentation
 This documentation outlines the endpoints and usage of the My Node.js Express REST API.
 
