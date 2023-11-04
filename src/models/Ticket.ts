@@ -45,14 +45,14 @@ const TicketSchema = new mongoose.Schema({
 
 TicketSchema.pre('save', async function (next) {
   try {
-    const category = await CategoryModel.findById(this.category);
+    const category = await CategoryModel.findById(this.category)
     if (!category) {
-      throw new Error('An existing category is required');
+      throw new Error('An existing category is required')
     }
     next()
   } catch (error) {
     next(error)
   }
-});
+})
 
 export const TicketModel = mongoose.model<TicketDocumentInterface, TicketModelInterface>('Ticket', TicketSchema)

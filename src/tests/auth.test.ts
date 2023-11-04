@@ -4,24 +4,37 @@ import request from 'supertest'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { authEndpoints } from '../config/endpoints'
 
-let dbServer: any
-beforeAll(async () => {
-  dbServer = await MongoMemoryServer.create()
-  const dbServerURL = await dbServer.getUri()
-  await mongoose.connect(dbServerURL)
-})
-
-afterEach(async () => {
-  await mongoose.connection.collection('users').deleteMany({})
-})
-
+// Starting express application
 const app = createServer()
 
+// Useful Objects to use on the tests
 const userInput = {
   name: 'User Test',
   email: 'tester@test.com',
   password: 'google1234'
 }
+
+// DB
+let dbServer: any
+
+// One-Time setup, this block of code is going to be executed before all tests begin.
+beforeAll(async () => {
+  // Starting Mongo Memory server
+  dbServer = await MongoMemoryServer.create()
+  const dbServerURL = await dbServer.getUri()
+  await mongoose.connect(dbServerURL)
+})
+
+// After all tests finish Mongo Mermory Server execution.
+afterAll(async () => {
+  await mongoose.disconnect()
+  await dbServer.stop()
+})
+
+// Clear the tickets collection before each test
+afterEach(async () => {
+  await mongoose.connection.collection('users').deleteMany({})
+})
 
 describe('Authentication Routes', () => {
   describe('User Signup', () => {
@@ -119,6 +132,7 @@ describe('Authentication Routes', () => {
       })
     })
 
+    // TODO
     // describe('User attempts to register with a username that contains special characters.', () => {
     //     it('Should return a 400 status code with a "Username must not contain special characters" error message.', () => {
     //     })
@@ -214,7 +228,7 @@ describe('Authentication Routes', () => {
           })
 
         const jwtCookie = loginHeaders['set-cookie'][0]
-        
+
         const { statusCode, body } = await request(app)
           .get('/check_authentication')
           .set('Cookie', jwtCookie)
@@ -250,9 +264,4 @@ describe('Authentication Routes', () => {
       })
     })
   })
-})
-
-afterAll(async () => {
-  await mongoose.disconnect()
-  await dbServer.stop()
 })

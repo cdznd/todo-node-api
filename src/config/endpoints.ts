@@ -1,15 +1,15 @@
 export const authEndpoints = {
-    signup: '/signup',
-    login: '/login',
-    logout: '/logout',
+  signup: '/signup',
+  login: '/login',
+  logout: '/logout'
 }
 
 export const ticketEndpoints = {
-    tickets: '/tickets',
-    updateTicket: '/tickets/:ticketId',
-    deleteTicket: '/tickets/:ticketId'
+  tickets: '/tickets',
+  updateTicket: '/tickets/:ticketId',
+  deleteTicket: '/tickets/:ticketId'
 }
 
 export const categoryEndpoints = {
-    categories: '/categories'
+  categories: '/categories'
 }

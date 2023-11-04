@@ -1,4 +1,4 @@
-import { Router, type RequestHandler, type Response, type Request } from 'express'
+import { Router, type RequestHandler } from 'express'
 import { requireAuth } from '../middleware/authMiddleware'
 import { createCategory, listCategories, getCategory, updateCategory, deleteCategory } from '../controllers/categoryController'
 import { categoryEndpoints } from '../config/endpoints'
