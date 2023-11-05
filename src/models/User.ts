@@ -14,6 +14,38 @@ interface UserModelInterface extends Model<UserDocumentInterface> {
   login: (email: string, password: string) => UserDocumentInterface
 }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         name:
+ *           type: string
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date
+ *           description: The date the User was created
+ *         updatedAt:
+ *           type: string
+ *           format: date
+ *           description: The date the User was updated
+ *   example:
+ *     id: d5fE_asz
+ *     name: John Snow
+ *     email: john.snow@gmail.com
+ *     createdAt: 2020-03-10T04:05:06:157Z
+ *     updatedAt: 2020-03-10T04:05:06.157Z
+ */
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -36,14 +68,20 @@ const UserSchema = new mongoose.Schema({
   timestamps: true
 })
 
-// Mongoose Hooks.
-// Function to be triggered right before the doc is saved on the DB.
+/* 
+  Mongoose Hooks.
+  Function to be triggered before the doc is saved on the DB. 
+*/
 UserSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt()
   this.password = await bcrypt.hash(this.password, salt)
   next()
 })
 
+/* 
+  Statics are pretty much the same as methods but allow for defining functions that 
+  exists directly on your model 
+*/
 UserSchema.statics.login = async (email: string, password: string) => {
   const user = await UserModel.findOne({ email })
   if (user) {
