@@ -39,12 +39,12 @@ interface UserModelInterface extends Model<UserDocumentInterface> {
  *           type: string
  *           format: date
  *           description: The date the User was updated
- *   example:
- *     id: d5fE_asz
- *     name: John Snow
- *     email: john.snow@gmail.com
- *     createdAt: 2020-03-10T04:05:06:157Z
- *     updatedAt: 2020-03-10T04:05:06.157Z
+ *       example:
+ *         id: d5fE_asz
+ *         name: John Snow
+ *         email: john.snow@gmail.com
+ *         createdAt: 2020-03-10T04:05:06:157Z
+ *         updatedAt: 2023-03-10T04:05:06.157Z
  */
 const UserSchema = new mongoose.Schema({
   name: {

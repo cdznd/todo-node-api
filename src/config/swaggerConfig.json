@@ -15,6 +15,18 @@
                 "url": "https://fabricio-tech.dev",
                 "email": "floyd9732@gmail.com"
             }
+        },
+        "components": {
+            "securitySchemes": {
+                "cookieAuth": {
+                    "type": "apiKey",
+                    "in": "cookie",
+                    "name": "JWTTOKEN"
+                }
+            }
+        },
+        "security": {
+            "cookieAuth": []
         }
     },
     "apis": [ "./src/routes/*.ts", "./src/models/*.ts" ]
