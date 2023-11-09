@@ -1,4 +1,4 @@
-import { Router, type RequestHandler, type Response, type Request } from 'express'
+import { Router, type RequestHandler } from 'express'
 import { signup, login, logout } from '../controllers/authController'
 import { requireAuth } from '../middleware/authMiddleware'
 import { authEndpoints } from '../config/endpoints'
@@ -42,9 +42,9 @@ const router = Router()
  *            application/json:
  *              schema:
  *                $ref: '#/components/schemas/User'
- *          headers: 
+ *          headers:
  *            Set-Cookie:
- *              schema: 
+ *              schema:
  *                type: string
  *                example: JSESSIONID=abcde12345; Path=/; HttpOnly
  *        409:
@@ -52,10 +52,10 @@ const router = Router()
  *            Conflit with an already existing User.
  *          content:
  *            application/json:
- *              schema: 
+ *              schema:
  *                type: object
  *                properties:
- *                  errors: 
+ *                  errors:
  *                    type: object
  *                example:
  *                  errors: { "email": "Account with this email already exists" }
@@ -91,36 +91,53 @@ router.post(authEndpoints.signup, signup as RequestHandler)
  *        200:
  *          description: >
  *            Successfully authenticated.
- *            The session ID is returned in a cookie named `JSESSIONID`. and the user is returned on the response body
+ *            The JWT Token is returned in a cookie named 'jwt', and the access Token is returned on the response body.
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
- *          headers: 
+ *                type: object
+ *                properties:
+ *                  accessToken:
+ *                    type: string
+ *                example:
+ *                  accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDgyZWIzYmU4ODdjMjZkZTk3ZjYwZCIsImlhdCI6MTY5OTU0NDYwMCwiZXhwIjoxNjk5NTUxODAwfQ.-CsdpzdG0h4aNSzP9JzrRf6eeDdeZivLVTqU0vi58qc
+ *          headers:
  *            Set-Cookie:
- *              schema: 
+ *              schema:
  *                type: string
- *                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+ *                example: Max-Age=7200; Path=/; Expires=Wed, 08 Nov 2023 01:52:07 GMT; HttpOnly
  *        400:
  *          description: >
  *            Login Failed, email or pass incorrect. Is returned a 400 Bad Request status code and a JSON with the error mensage
  *          content:
  *            application/json:
- *              schema: 
+ *              schema:
  *                type: object
  *                properties:
- *                  errors: 
+ *                  errors:
  *                    type: object
  *                example:
  *                  errors: { "details": "Incorrect username or password" }
- *                
+ *
  */
 router.post(authEndpoints.login, login as RequestHandler)
-router.get(authEndpoints.logout, requireAuth, logout as RequestHandler)
 
-router.get('/check_authentication', requireAuth, (req: Request, res: Response) => {
-  const user = res.locals.user
-  res.status(200).json({ message: `Currently logged with user ${user.name}, email: ${user.email}` })
-})
+/**
+ * @openapi
+ * paths:
+ *  /logout:
+ *    get:
+ *      tags:
+ *        - User Authentication
+ *      summary: Logout
+ *      description: Logout
+ *      security: []
+ *      responses:
+ *        200:
+ *          description: >
+ *            Successfully Logout
+ *
+ */
+router.get(authEndpoints.logout, requireAuth, logout as RequestHandler)
 
 export const authRoutes = router

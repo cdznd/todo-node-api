@@ -19,9 +19,9 @@
         "components": {
             "securitySchemes": {
                 "cookieAuth": {
-                    "type": "apiKey",
-                    "in": "cookie",
-                    "name": "JWTTOKEN"
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT"
                 }
             }
         },

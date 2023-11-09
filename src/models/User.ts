@@ -68,9 +68,9 @@ const UserSchema = new mongoose.Schema({
   timestamps: true
 })
 
-/* 
+/*
   Mongoose Hooks.
-  Function to be triggered before the doc is saved on the DB. 
+  Function to be triggered before the doc is saved on the DB.
 */
 UserSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt()
@@ -78,9 +78,9 @@ UserSchema.pre('save', async function (next) {
   next()
 })
 
-/* 
-  Statics are pretty much the same as methods but allow for defining functions that 
-  exists directly on your model 
+/*
+  Statics are pretty much the same as methods but allow for defining functions that
+  exists directly on your model
 */
 UserSchema.statics.login = async (email: string, password: string) => {
   const user = await UserModel.findOne({ email })

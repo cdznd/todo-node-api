@@ -28,14 +28,25 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, password } = req.body
+  const { include } = req.query
+
   try {
     const user = await UserModel.login(email, password)
     const token = createToken(user._id)
+
+    let userInfo
+    if (include === 'user') {
+      userInfo = user
+    }
+
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: maxAge * 1000
     })
-    res.status(200).json(omit(user.toJSON(), 'password', '__v'))
+    res.status(200).json({
+      accessToken: token,
+      userInfo
+    })
   } catch (err) {
     next(err)
   }
