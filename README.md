@@ -31,3 +31,8 @@ Ticket
     priority
     created_at
     updated_at
+
+# TODO
+Creating versioning of endpoint
+/v2/
+/v1/ 
