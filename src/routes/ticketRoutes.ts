@@ -39,7 +39,7 @@ router.post(ticketEndpoints.tickets, requireAuth, createTicket as RequestHandler
 *       - Ticket
 *     summary: Create a new Ticket
 *     description: Creates a new ticket and responds with a 201 status code along with the successfully created ticket.
-*     security: 
+*     security:
 *       - cookieAuth: []
 *     responses:
 *       201:
