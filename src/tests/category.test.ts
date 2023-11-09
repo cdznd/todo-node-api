@@ -20,7 +20,7 @@ const userInput = {
 
 // Auth
 let jwtCookie: any
-let userId: any
+let authenticatedUserId: any
 // DB
 let dbServer: any
 
@@ -33,12 +33,12 @@ beforeAll(async () => {
 
   // Creating a new user
   await request(app).post(authEndpoints.signup).send(userInput)
-  const { headers, body: bodyUser } = await request(app).post(authEndpoints.login).send({
+  const { headers, body: bodyUser } = await request(app).post(`${authEndpoints.login}/?include=user`).send({
     email: userInput.email,
     password: userInput.password
   })
   jwtCookie = headers['set-cookie'][0]
-  userId = bodyUser._id
+  authenticatedUserId = bodyUser.userInfo._id
 })
 
 // After all tests finish Mongo Mermory Server execution.
@@ -63,7 +63,7 @@ describe('Category routes', () => {
             .set('Cookie', jwtCookie)
           expect(statusCode).toBe(201)
           expect(body.title).toBe(categoryInput.title)
-          expect(body.created_by).toBe(userId)
+          expect(body.created_by).toBe(authenticatedUserId)
         })
       })
 
@@ -142,7 +142,7 @@ describe('Category routes', () => {
           expect(firstItem).toHaveProperty('createdAt')
           expect(firstItem).toHaveProperty('updatedAt')
 
-          expect(firstItem.created_by).toBe(userId)
+          expect(firstItem.created_by).toBe(authenticatedUserId)
 
           const secondItem = body.data[1]
 
@@ -154,7 +154,7 @@ describe('Category routes', () => {
           expect(secondItem).toHaveProperty('createdAt')
           expect(secondItem).toHaveProperty('updatedAt')
 
-          expect(secondItem.created_by).toBe(userId)
+          expect(secondItem.created_by).toBe(authenticatedUserId)
         })
 
         it('Should have links, meta, and data properties in the response body', async () => {
@@ -210,7 +210,7 @@ describe('Category routes', () => {
           expect(statusCode).toBe(statusCode)
           expect(body).toHaveProperty('title')
           expect(body.title).toBe(createdCategories[0].title)
-          expect(body.created_by).toBe(userId)
+          expect(body.created_by).toBe(authenticatedUserId)
         })
 
         // TODO
