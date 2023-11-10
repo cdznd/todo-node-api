@@ -221,7 +221,7 @@ describe('Authentication Routes', () => {
         await request(app).post(authEndpoints.signup).send(userInput)
 
         const { headers: loginHeaders } = await request(app)
-          .post(authEndpoints.login)
+          .post(`${authEndpoints.login}/?include=user`)
           .send({
             email: userInput.email,
             password: userInput.password
@@ -229,12 +229,11 @@ describe('Authentication Routes', () => {
 
         const jwtCookie = loginHeaders['set-cookie'][0]
 
-        const { statusCode, body } = await request(app)
-          .get('/check_authentication')
+        const { statusCode } = await request(app)
+          .get('/tickets')
           .set('Cookie', jwtCookie)
 
         expect(statusCode).toBe(200)
-        expect(body.message).toBe(`Currently logged with user ${userInput.name}, email: ${userInput.email}`)
       })
     })
   })

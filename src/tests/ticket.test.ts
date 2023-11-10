@@ -43,7 +43,7 @@ const ticketInput = {
 
 // Auth
 let jwtCookie: any
-let userId: any
+let authenticatedUserId: any
 // DB
 let dbServer: any
 // Sample data
@@ -58,12 +58,14 @@ beforeAll(async () => {
 
   // Creating a new user
   await request(app).post(authEndpoints.signup).send(userInput)
-  const { headers, body: bodyUser } = await request(app).post(authEndpoints.login).send({
+  const { headers, body: bodyUser } = await request(app).post(`${authEndpoints.login}/?include=user`).send({
     email: userInput.email,
     password: userInput.password
   })
   jwtCookie = headers['set-cookie'][0]
-  userId = bodyUser._id
+
+  // Get the id of the logged user
+  authenticatedUserId = bodyUser.userInfo._id
 
   // Creating sample categories
   for (const category of categories) {
@@ -98,7 +100,7 @@ describe('Tickets Routes', () => {
           expect(body.category).toBe(updatedTicketInput.category)
           expect(body.status).toBe(updatedTicketInput.status)
           expect(body.priority).toBe(updatedTicketInput.priority)
-          expect(body.created_by).toBe(userId)
+          expect(body.created_by).toBe(authenticatedUserId)
         })
       })
 
@@ -366,7 +368,7 @@ describe('Tickets Routes', () => {
           expect(body.category).toBe(categoryBody._id)
           expect(body.status).toBe(newTicket.status)
           expect(body.priority).toBe(newTicket.priority)
-          expect(body.created_by).toBe(userId)
+          expect(body.created_by).toBe(authenticatedUserId)
         })
       })
 

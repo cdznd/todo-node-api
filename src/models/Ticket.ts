@@ -13,6 +13,60 @@ interface TicketDocumentInterface extends Document {
 interface TicketModelInterface extends Model<TicketDocumentInterface> {
 }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Ticket:
+ *       type: object
+ *       required:
+ *         - title
+ *         - category
+ *         - status
+ *         - priority
+ *         - created_by
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: The title of the ticket.
+ *         category:
+ *           type: string
+ *           description: The category of the ticket, referring to an existing category.
+ *         status:
+ *           type: string
+ *           enum:
+ *             - In Progress
+ *             - Todo
+ *             - In Requirements
+ *           description: The status of the ticket, must be one of the predefined values.
+ *         priority:
+ *           type: string
+ *           enum:
+ *             - Low
+ *             - Medium
+ *             - High
+ *             - Critical
+ *           description: The priority of the ticket, must be one of the predefined values.
+ *         created_by:
+ *           type: string
+ *           description: The user who created the ticket, referring to an existing user.
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time the ticket was created.
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time the ticket was last updated.
+ *   example:
+ *     title: Sample Ticket
+ *     category: 5fE_asz // Category ObjectId
+ *     status: Todo
+ *     priority: Medium
+ *     created_by: d5fE_asz // User ObjectId
+ *     createdAt: 2023-11-05T12:34:56.789Z
+ *     updatedAt: 2023-11-05T12:34:56.789Z
+ */
 const TicketSchema = new mongoose.Schema({
   title: {
     type: String,

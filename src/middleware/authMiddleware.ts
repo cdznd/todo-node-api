@@ -9,7 +9,7 @@ export const requireAuth: RequestHandler = (req: Request, res: Response, next: N
   if (token) {
     jwt.verify(token, JWT_SECRET_KEY, (err: any) => {
       if (err) {
-        res.status(400).send('Error during token verification')
+        res.status(400).send('Authentication credentials were not provided.')
       } else {
         next()
       }
