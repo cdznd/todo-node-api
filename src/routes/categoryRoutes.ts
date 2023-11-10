@@ -9,7 +9,7 @@ const router = Router()
  * @openapi
  * components:
  *  schemas:
- *    PaginateResults:
+ *    CategoryPaginateResults:
  *      type: object
  *      properties:
  *        links:
@@ -61,7 +61,7 @@ const router = Router()
  *      description: Create a new Category
  *      security:
  *        - cookieAuth: []
- *      requestBody:   # OpenAPI 3.0 provides the requestBody keyword to describe request bodies.
+ *      requestBody:
  *        description: A JSON object containing a valid title.
  *        required: true
  *        content:
@@ -113,14 +113,125 @@ router.post(categoryEndpoints.categories, requireAuth, createCategory as Request
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/PaginateResults'
+ *                $ref: '#/components/schemas/CategoryPaginateResults'
  */
 router.get(categoryEndpoints.categories, requireAuth, listCategories as RequestHandler)
 
+/**
+ * @openapi
+ * paths:
+ *  /categories/{id}:
+ *    get:
+ *      tags:
+ *       - Category
+ *      summary: Get Category by ID
+ *      description: Return the found Category JSON on the response
+ *      security:
+ *        - cookieAuth: []
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Category ID
+ *          required: true
+ *          type: integer
+ *      responses:
+ *        200:
+ *          description: >
+ *            Successfully returned the Category found.
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Category'
+ */
 router.get('/categories/:id', requireAuth, getCategory as RequestHandler)
-// UPDATE
+
+/**
+ * @openapi
+ * paths:
+ *  /categories/{id}:
+ *    put:
+ *      tags:
+ *       - Category
+ *      summary: Update Category
+ *      description: Update a Category, and return the updated version
+ *      security:
+ *        - cookieAuth: []
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Category ID
+ *          required: true
+ *          type: integer
+ *      requestBody:
+ *        description: A JSON object containing a valid title.
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                title:
+ *                  type: string
+ *              example:
+ *                title: New Web Project
+ *      responses:
+ *        200:
+ *          description: >
+ *            Successfully returned the Category found.
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Category'
+ *        404:
+ *          description: >
+ *            Category not found
+ *          content:
+ *            text/plain:
+ *              schema:
+ *                type: string
+ *                example: "Category not found"
+ */
 router.put('/categories/:id', requireAuth, updateCategory as RequestHandler)
-// DELETE
+
+/**
+ * @openapi
+ * paths:
+ *  /categories/{id}:
+ *    delete:
+ *      tags:
+ *       - Category
+ *      summary: Delete Category by ID
+ *      description: Found and Category By ID and delete it.
+ *      security:
+ *        - cookieAuth: []
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Category ID
+ *          required: true
+ *          type: integer
+ *      responses:
+ *        200:
+ *          description: >
+ *            Category successfully deleted.
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  acknowledged:
+ *                    type: bool
+ *                  deletedCount:
+ *                    type: integer
+ *        404:
+ *          description: >
+ *            Category not found
+ *          content:
+ *            text/plain:
+ *              schema:
+ *                type: string
+ *                example: "Category not found"
+ */
 router.delete('/categories/:id', requireAuth, deleteCategory as RequestHandler)
 
 export const categoryRoutes = router
