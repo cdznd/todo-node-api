@@ -6,57 +6,79 @@ import { ticketEndpoints } from '../config/endpoints'
 const router = Router()
 
 /**
-* @openapi
-* /tickets:
-*  post:
-*     tags:
-*     - Ticket
-*     summary: Create a new Ticket
-*     description: Creates a new ticket and responds responds with 201 statud code and the succefully created ticket.
-*     responses:
-*       201:
-*         description: Ticket Successfully Created
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/User'
-*       400:
-*         description: Bad Request
-*     requestBody:
-*       required: true
-*       content:
-*         application/json:
-*           schema:
-*             $ref: '#/components/schemas/User'
-*/
+ * @openapi
+ * paths:
+ *  /tickets:
+ *    post:
+ *      tags:
+ *       - Ticket
+ *      summary: Create a new Ticket
+ *      description: Create a new Ticket
+ *      security:
+ *        - cookieAuth: []
+ *      requestBody:   # OpenAPI 3.0 provides the requestBody keyword to describe request bodies.
+ *        description: A JSON object containing a valid title.
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                title:
+ *                  type: string
+ *                category:
+ *                  type: string
+ *                status:
+ *                  type: string
+ *                priority:
+ *                  type: string
+ *              example:
+ *                title: Task
+ *                category: '654ad042e3fdf769e0199371'
+ *                status: 'In Progress'
+ *                priority: 'Low'
+ *      responses:
+ *        201:
+ *          description: >
+ *            Ticket is succefully created, the Ticket JSON is returned on the response body
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Ticket'
+ */
 router.post(ticketEndpoints.tickets, requireAuth, createTicket as RequestHandler)
 
 /**
-* @openapi
-* /tickets:
-*   post:
-*     tags:
-*       - Ticket
-*     summary: Create a new Ticket
-*     description: Creates a new ticket and responds with a 201 status code along with the successfully created ticket.
-*     security:
-*       - cookieAuth: []
-*     responses:
-*       201:
-*         description: Ticket Successfully Created
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/Ticket'  # Use the Ticket schema definition
-*       400:
-*         description: Bad Request
-*     requestBody:
-*       required: true
-*       content:
-*         application/json:
-*           schema:
-*             $ref: '#/components/schemas/Ticket'  # Use the Ticket schema definition
-*/
+ * @openapi
+ * paths:
+ *  /tickets:
+ *    get:
+ *      tags:
+ *       - Ticket
+ *      summary: List Tickets
+ *      description: Return a paginated list of Tickets
+ *      security:
+ *        - cookieAuth: []
+ *      parameters:
+ *        - name: page
+ *          in: query
+ *          description: Page number
+ *          required: false
+ *          type: integer
+ *        - name: limit
+ *          in: query
+ *          description: Items per page / limit of items per page
+ *          required: false
+ *          type: integer
+ *      responses:
+ *        200:
+ *          description: >
+ *            Successfully returned a paginated list of Tickets.
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/PaginateResults'
+ */
 router.get(ticketEndpoints.tickets, requireAuth, listTickets as RequestHandler)
 
 /**

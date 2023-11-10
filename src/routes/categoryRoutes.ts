@@ -7,6 +7,51 @@ const router = Router()
 
 /**
  * @openapi
+ * components:
+ *  schemas:
+ *    PaginateResults:
+ *      type: object
+ *      properties:
+ *        links:
+ *          type: object
+ *          properties:
+ *            prev:
+ *              type: string
+ *            next:
+ *              type: string
+ *        meta:
+ *          type: object
+ *          properties:
+ *            totalItems:
+ *              type: integer
+ *            totalPages:
+ *              type: integer
+ *            page:
+ *              type: integer
+ *        data:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              _id:
+ *                type: string
+ *              title:
+ *                type: string
+ *              created_by:
+ *                type: string
+ *              createdAt:
+ *                type: string
+ *                format: date-time
+ *              updatedAt:
+ *                type: string
+ *                format: date-time
+ *              __v:
+ *                type: integer
+ */
+
+
+/**
+ * @openapi
  * paths:
  *  /categories:
  *    post:
@@ -31,37 +76,47 @@ const router = Router()
  *      responses:
  *        201:
  *          description: >
- *            User succefully created, the user JSON is returned on the response body
- *            The session ID is returned in a cookie named `JSESSIONID`. You need to include this cookie in subsequent requests.
+ *            Category is succefully created, the Category JSON is returned on the response body
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
- *          headers:
- *            Set-Cookie:
- *              schema:
- *                type: string
- *                example: JSESSIONID=abcde12345; Path=/; HttpOnly
- *        409:
- *          description: >
- *            Conflit with an already existing User.
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  errors:
- *                    type: object
- *                example:
- *                  errors: { "email": "Account with this email already exists" }
- *        #401:
- *          #$ref: '#/components/responses/UnauthorizedError'
+ *                $ref: '#/components/schemas/Category'
  */
 router.post(categoryEndpoints.categories, requireAuth, createCategory as RequestHandler)
-// READ
-// // List Categories
+
+/**
+ * @openapi
+ * paths:
+ *  /categories:
+ *    get:
+ *      tags:
+ *       - Category
+ *      summary: List Categories
+ *      description: A paginated list of Categories
+ *      security:
+ *        - cookieAuth: []
+ *      parameters:
+ *        - name: page
+ *          in: query
+ *          description: Page number
+ *          required: false
+ *          type: integer
+ *        - name: limit
+ *          in: query
+ *          description: Items per page / limit of items per page
+ *          required: false
+ *          type: integer
+ *      responses:
+ *        200:
+ *          description: >
+ *            Successfully returned a paginated list of Categories.
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/PaginateResults'
+ */
 router.get(categoryEndpoints.categories, requireAuth, listCategories as RequestHandler)
-// // Specific Category
+
 router.get('/categories/:id', requireAuth, getCategory as RequestHandler)
 // UPDATE
 router.put('/categories/:id', requireAuth, updateCategory as RequestHandler)
