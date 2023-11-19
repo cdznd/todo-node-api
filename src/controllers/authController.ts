@@ -5,10 +5,23 @@ import { JWT_SECRET_KEY } from '../config'
 import { type Types } from 'mongoose'
 import { omit } from 'lodash'
 
-// 2 hours
-const maxAge = 60 * 60 * 2
-const createToken = (id: Types.ObjectId): string => {
-  return jwt.sign({ id }, JWT_SECRET_KEY, { expiresIn: maxAge })
+// This function must create an Access and a Refresh Token.
+const createAuthTokens = (userEmail: string): { accessToken: string, refreshToken: string} => {
+  // Payload: Used to identify the user (e.g user_id).
+  // It's data that is enconded into the JWT.
+  // It's important that no sensitive data must be stored here
+  const jwtPayload = { userEmail }
+  // JWT Signing process - Makes the token secure like a stamp of authenticity of the server.
+  // Sign the given payload into a Json Web Token.
+  // Short TTL
+  const accessToken = jwt.sign(jwtPayload, JWT_SECRET_KEY, { expiresIn: '30s' })
+  // Long TTL, and must be saved on the database
+  const refreshToken = jwt.sign(jwtPayload, JWT_SECRET_KEY, { expiresIn: '1d' })
+
+  return {
+    accessToken,
+    refreshToken
+  }
 }
 
 export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -32,19 +45,22 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 
   try {
     const user = await UserModel.login(email, password)
-    const token = createToken(user._id)
+    
+    const { accessToken, refreshToken } = createAuthTokens(user.email)
 
     let userInfo
     if (include === 'user') {
       userInfo = user
     }
 
-    res.cookie('jwt', token, {
+    // Refresh Token on the Cookie as httpOnly
+    res.cookie('jwt', refreshToken, {
       httpOnly: true,
-      maxAge: maxAge * 1000
+      maxAge: 24 * 60 * 60 * 1000 // one day
     })
+    // Returning the AccessToken on the response
     res.status(200).json({
-      accessToken: token,
+      accessToken,
       userInfo
     })
   } catch (err) {
