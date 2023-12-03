@@ -1,4 +1,4 @@
-{
+export const SWAGGER_CONFIG = {
     "definition": {
         "openapi": "3.1.0",
         "info": {

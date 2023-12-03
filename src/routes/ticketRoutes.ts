@@ -1,6 +1,5 @@
 import { createTicket, listTickets, getTicket, deleteTicket, updateTicket } from '../controllers/ticketController'
 import { type RequestHandler, Router } from 'express'
-import { requireAuth } from '../middleware/authMiddleware'
 import { ticketEndpoints } from '../config/endpoints'
 
 const router = Router()
@@ -96,7 +95,7 @@ const router = Router()
  *              schema:
  *                $ref: '#/components/schemas/Ticket'
  */
-router.post(ticketEndpoints.tickets, requireAuth, createTicket as RequestHandler)
+router.post(ticketEndpoints.tickets, createTicket as RequestHandler)
 
 /**
  * @openapi
@@ -129,7 +128,7 @@ router.post(ticketEndpoints.tickets, requireAuth, createTicket as RequestHandler
  *              schema:
  *                $ref: '#/components/schemas/TicketPaginateResults'
  */
-router.get(ticketEndpoints.tickets, requireAuth, listTickets as RequestHandler)
+router.get(ticketEndpoints.tickets, listTickets as RequestHandler)
 
 /**
  * @openapi
@@ -157,7 +156,7 @@ router.get(ticketEndpoints.tickets, requireAuth, listTickets as RequestHandler)
  *              schema:
  *                $ref: '#/components/schemas/Ticket'
  */
-router.get(`${ticketEndpoints.tickets}/:ticketId`, requireAuth, getTicket as RequestHandler)
+router.get(`${ticketEndpoints.tickets}/:ticketId`, getTicket as RequestHandler)
 
 /**
  * @openapi
@@ -214,7 +213,7 @@ router.get(`${ticketEndpoints.tickets}/:ticketId`, requireAuth, getTicket as Req
  *                type: string
  *                example: "Ticket not found"
  */
-router.put(`${ticketEndpoints.tickets}/:ticketId`, requireAuth, updateTicket as RequestHandler)
+router.put(`${ticketEndpoints.tickets}/:ticketId`, updateTicket as RequestHandler)
 
 /**
  * @openapi
@@ -255,6 +254,6 @@ router.put(`${ticketEndpoints.tickets}/:ticketId`, requireAuth, updateTicket as 
  *                type: string
  *                example: "Ticket not found"
  */
-router.delete(ticketEndpoints.deleteTicket, requireAuth, deleteTicket as RequestHandler)
+router.delete(ticketEndpoints.deleteTicket, deleteTicket as RequestHandler)
 
 export const ticketRoutes = router

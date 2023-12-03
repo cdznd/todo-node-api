@@ -1,7 +1,7 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { UserModel } from '../models/User'
 import jwt from 'jsonwebtoken'
-import { JWT_SECRET_KEY } from '../config'
+import { JWT_SECRET_KEY } from '../config/app.config'
 import { type Types } from 'mongoose'
 import { omit } from 'lodash'
 
@@ -47,6 +47,9 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     const user = await UserModel.login(email, password)
     
     const { accessToken, refreshToken } = createAuthTokens(user.email)
+
+    // need to save the refreshtoken on the db
+    UserModel.findOneAndUpdate({ _id: user._id}, { refreshToken })
 
     let userInfo
     if (include === 'user') {

@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  # MongoDB container
+  db:
+    image: mongo:latest
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$DB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$DB_PASSWORD
+    volumes:
+      - ./db:/data/db
+
+  # Node.js container
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - db
+  #   env_file: ./.env
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - DB_HOST=db
+  #     - DB_USER=$DB_USER
+  #     - DB_PASSWORD=$DB_PASSWORD
+  #     - DB_NAME=$DB_DATABASE
+  #     - DB_PORT=$DB_PORT
+  #   stdin_open: true # To keep open the terminal after docker build the container
+  #   tty: true
