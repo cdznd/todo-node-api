@@ -140,6 +140,22 @@ router.post(authEndpoints.login, login as RequestHandler)
  */
 router.get(authEndpoints.logout, logout as RequestHandler)
 
+/**
+ * @openapi
+ * paths:
+ *  /refresh:
+ *    get:
+ *      tags:
+ *        - User Authentication
+ *      summary: Refresh Token
+ *      description: Refresh Token
+ *      security: []
+ *      responses:
+ *        200:
+ *          description: >
+ *            New Access Token generated
+ *
+ */
 router.get('/refresh', refresh as RequestHandler)
 
 export const authRoutes = router
