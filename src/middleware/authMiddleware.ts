@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction, type RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
-import { JWT_SECRET_KEY } from '../config/app.config'
-import { getUserById } from '../models/User'
+import { JWT_ACCESS_TOKEN_SECRET, JWT_SECRET_KEY } from '../config/app.config'
+import { UserModel, getUserById } from '../models/User'
 
 /**
  * This function re-verifies the cookies, and check if there's a JWT Token on it.
@@ -26,18 +26,22 @@ export const requireAuth: RequestHandler = (req: Request, res: Response, next: N
  * If the cookies exists on the request we set a user on the response.locals.user, if not we set it to null
  */
 export const checkUser: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.jwt
+  
+  // Authorization Header here
+  const authHeader = req.headers.authorization || req.headers.Authorization || ''
+  
+  if(!(<string>authHeader).startsWith('Bearer')) return res.status(403).json({message: 'Unauthorized'})
 
-  console.log('Inside checkUser')
-  console.log(token)
+  const token = (<string>authHeader).split(' ')[1]
 
   if (token) {
-    jwt.verify(token, JWT_SECRET_KEY, async (err: any, decodedToken: any) => {
+    jwt.verify(token, JWT_ACCESS_TOKEN_SECRET, async (err: any, decodedToken: any) => {
       try {
         if (err) {
           next(err)
         } else {
-          res.locals.user = await getUserById(decodedToken.id) || res.locals.user
+          const currentUser = await UserModel.findOne({ email: decodedToken.UserInfo.email }) || res.locals.user
+          res.locals.user = currentUser
           next()
         }
       } catch (err) {

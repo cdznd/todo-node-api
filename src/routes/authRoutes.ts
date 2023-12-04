@@ -1,5 +1,5 @@
 import { Router, type RequestHandler } from 'express'
-import { signup, login, logout } from '../controllers/authController'
+import { signup, login, logout, refresh } from '../controllers/authController'
 import { requireAuth } from '../middleware/authMiddleware'
 import { authEndpoints } from '../config/endpoints'
 
@@ -138,6 +138,8 @@ router.post(authEndpoints.login, login as RequestHandler)
  *            Successfully Logout
  *
  */
-router.get(authEndpoints.logout, requireAuth, logout as RequestHandler)
+router.get(authEndpoints.logout, logout as RequestHandler)
+
+router.get('/refresh', refresh as RequestHandler)
 
 export const authRoutes = router

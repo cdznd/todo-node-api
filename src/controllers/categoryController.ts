@@ -5,10 +5,15 @@ import { paginateResults } from '../utils'
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
   const { title } = req.body
-
   const currentUser = res.locals.user
+  console.log('current User')
+  console.log(currentUser)
   try {
     const category = await CategoryModel.create({ title, created_by: currentUser._id })
+
+    console.log('after create category')
+    console.log(currentUser._id)
+
     res.status(201).json(category)
   } catch (err) {
     next(err)

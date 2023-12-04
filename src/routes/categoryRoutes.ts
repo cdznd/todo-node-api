@@ -1,7 +1,7 @@
 import { Router, type RequestHandler } from 'express'
-import { requireAuth } from '../middleware/authMiddleware'
 import { createCategory, listCategories, getCategory, updateCategory, deleteCategory } from '../controllers/categoryController'
 import { categoryEndpoints } from '../config/endpoints'
+import { checkUser } from '../middleware/authMiddleware'
 
 const router = Router()
 
@@ -82,7 +82,7 @@ const router = Router()
  *              schema:
  *                $ref: '#/components/schemas/Category'
  */
-router.post(categoryEndpoints.categories, requireAuth, createCategory as RequestHandler)
+router.post(categoryEndpoints.categories, createCategory as RequestHandler)
 
 /**
  * @openapi
@@ -115,7 +115,7 @@ router.post(categoryEndpoints.categories, requireAuth, createCategory as Request
  *              schema:
  *                $ref: '#/components/schemas/CategoryPaginateResults'
  */
-router.get(categoryEndpoints.categories, requireAuth, listCategories as RequestHandler)
+router.get(categoryEndpoints.categories, listCategories as RequestHandler)
 
 /**
  * @openapi
@@ -143,7 +143,7 @@ router.get(categoryEndpoints.categories, requireAuth, listCategories as RequestH
  *              schema:
  *                $ref: '#/components/schemas/Category'
  */
-router.get('/categories/:id', requireAuth, getCategory as RequestHandler)
+router.get('/categories/:id', getCategory as RequestHandler)
 
 /**
  * @openapi
@@ -191,7 +191,7 @@ router.get('/categories/:id', requireAuth, getCategory as RequestHandler)
  *                type: string
  *                example: "Category not found"
  */
-router.put('/categories/:id', requireAuth, updateCategory as RequestHandler)
+router.put('/categories/:id', updateCategory as RequestHandler)
 
 /**
  * @openapi
@@ -232,6 +232,6 @@ router.put('/categories/:id', requireAuth, updateCategory as RequestHandler)
  *                type: string
  *                example: "Category not found"
  */
-router.delete('/categories/:id', requireAuth, deleteCategory as RequestHandler)
+router.delete('/categories/:id', deleteCategory as RequestHandler)
 
 export const categoryRoutes = router

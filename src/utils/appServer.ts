@@ -1,9 +1,11 @@
 import express, { type Express } from 'express'
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
+import { checkUser } from '../middleware/authMiddleware';
+
 // Middlewares
 import { handleErrors } from '../middleware/errorHandlerMiddleware'
-import { checkUser, requireAuth } from '../middleware/authMiddleware'
+
 // Routes
 import { authRoutes } from '../routes/authRoutes';
 import { healthcheckRoutes } from '../routes/healthcheckRoutes';
@@ -26,8 +28,6 @@ export const createServer = (): Express => {
   app.use(express.json())
   // Cookies Middleware
   app.use(cookieParser())
-
-  app.use('*', checkUser)
   
   // Not protected routes
   app.use(healthcheckRoutes)
@@ -37,8 +37,9 @@ export const createServer = (): Express => {
   swaggerDocs(app, PORT)
 
   // Protecting the other routes
-  app.use(requireAuth)
+  // app.use(requireAuth)
   
+  app.use(checkUser)
   // Protected Routes
   app.use(ticketRoutes)
   app.use(categoryRoutes)
