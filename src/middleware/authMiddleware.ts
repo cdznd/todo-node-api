@@ -29,8 +29,8 @@ export const checkUser: RequestHandler = (req: Request, res: Response, next: Nex
   
   // Authorization Header here
   const authHeader = req.headers.authorization || req.headers.Authorization || ''
-  
-  if(!(<string>authHeader).startsWith('Bearer')) return res.status(403).json({message: 'Unauthorized'})
+
+  if(!(<string>authHeader).startsWith('Bearer')) return res.status(400).json('Authentication credentials were not provided.')
 
   const token = (<string>authHeader).split(' ')[1]
 

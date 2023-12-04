@@ -82,7 +82,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 export const refresh = (req: Request, res: Response, next: NextFunction): any => {
   const cookies = req.cookies
 
-  if (!cookies?.jwt) return res.status(403).json({ message: 'Forbidden' })
+  if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
   const refreshToken = cookies.jwt
 
