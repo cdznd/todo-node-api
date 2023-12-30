@@ -55,9 +55,6 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 
     const { accessToken, refreshToken } = createAuthTokens(user.email)
 
-    // need to save the refreshtoken on the db
-    UserModel.findOneAndUpdate({ _id: user._id}, { refreshToken })
-
     // Refresh Token on the Cookie as httpOnly
     res.cookie('jwt', refreshToken, 
       {
@@ -94,13 +91,7 @@ export const refresh = (req: Request, res: Response, next: NextFunction): any =>
 
     if(!foundUser) return res.status(401).json({ message: 'Unauthorized' })
 
-    const jwtPayload = {
-      UserInfo: {
-        email: foundUser.email
-      }
-    }
-
-    const accessToken = jwt.sign(jwtPayload, JWT_ACCESS_TOKEN_SECRET, { expiresIn: JWT_ACCESS_TOKEN_TTL })
+    const { accessToken } = createAuthTokens(foundUser.email)
 
     res.json({ accessToken })
 
