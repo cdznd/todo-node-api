@@ -14,23 +14,26 @@ services:
       - mongo-db:/data/db
 
   # Node.js container
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - db
-  #   env_file: ./.env
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - DB_HOST=db
-  #     - DB_USER=$DB_USER
-  #     - DB_PASSWORD=$DB_PASSWORD
-  #     - DB_NAME=$DB_DATABASE
-  #     - DB_PORT=$DB_PORT
-  #   stdin_open: true # To keep open the terminal after docker build the container
-  #   tty: true
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo-db
+    env_file: ./.env
+    ports:
+      - "3001:8080"
+    environment:
+      - DB_HOST=mongo-db
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_NAME=$DB_DATABASE
+      - DB_PORT=$DB_PORT
+    stdin_open: true # To keep open the terminal after docker build the container
+    tty: true
 
 volumes:
   mongo-db: {}
+
+networks:
+  todo-app:
