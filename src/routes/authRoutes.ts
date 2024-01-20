@@ -1,6 +1,5 @@
 import { Router, type RequestHandler } from 'express'
 import { signup, login, logout, refresh } from '../controllers/authController'
-import { requireAuth } from '../middleware/authMiddleware'
 import { authEndpoints } from '../config/endpoints'
 
 const router = Router()
