@@ -6,15 +6,15 @@ services:
     image: mongo:latest
     env_file: ./.env
     ports:
-      - "27017:27017"
+      - "$DB_PORT:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
     volumes:
       - mongo-db:/data/db
 
-  # Node.js container
-  app:
+  app-backend:
+    container_name: todo-node-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,7 +22,7 @@ services:
       - mongo-db
     env_file: ./.env
     ports:
-      - "3001:8080"
+      - "$PORT:8080"
     environment:
       - DB_HOST=mongo-db
       - DB_USER=$DB_USER
