@@ -17,6 +17,8 @@ import swaggerDocs from './swagger';
 import { CORS_CONFIG } from '../config/cors.config';
 import { PORT } from '../config/app.config';
 
+import { me } from '../controllers/authController';
+
 export const createServer = (): Express => {
   
   const app = express()
@@ -31,15 +33,20 @@ export const createServer = (): Express => {
   
   // Not protected routes
   app.use(healthcheckRoutes)
-  // Authentication Routes
-  app.use(authRoutes)
+
   // Starting Swagger Docs
   swaggerDocs(app, PORT)
+
+  // Authentication Routes
+  app.use(authRoutes)
 
   // Protecting the other routes
   // app.use(requireAuth)
   
   app.use(checkUser)
+
+  app.get('/me', me)
+
   // Protected Routes
   app.use(ticketRoutes)
   app.use(categoryRoutes)

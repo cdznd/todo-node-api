@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       {
         secure: true, // HTTPS
         httpOnly: true, // Available only for the web server
-        maxAge: 7 * 24 * 60 * 60 * 1000 // one week
+        maxAge: 7 * 24 * 60 * 60 * 1000, // one week
       }
     )
 
@@ -77,6 +77,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
  * It should issue a new Access token if the refresh token is valid
  */
 export const refresh = (req: Request, res: Response, next: NextFunction): any => {
+
   const cookies = req.cookies
 
   if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
@@ -99,10 +100,23 @@ export const refresh = (req: Request, res: Response, next: NextFunction): any =>
 }
 
 export const logout = (req: Request, res: Response): void => {
+  // removing the refresh token
   res.cookie('jwt', '', { maxAge: 1 })
+  res.cookie('Authorization', '', { maxAge: 1 })
   res.status(200).send('ok')
 }
 
 export const testing = (req: Request, res: Response): void => {
   res.status(200).send({ item: 'Hello my frined' })
+}
+
+export const me = async (req: Request, res: Response): Promise<void> => {
+
+  const currentUser = res.locals.user
+
+  console.log('currentUser')
+  console.log(currentUser)
+
+  res.status(200).send(currentUser)
+
 }
