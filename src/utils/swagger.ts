@@ -1,9 +1,9 @@
 import { type Express, type Request, type Response } from 'express'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
-import swaggerConfig from '../config/swaggerConfig.json'
+import { SWAGGER_CONFIG } from '../config/swagger.config'
 
-const optionsConfig: swaggerJSDoc.Options = swaggerConfig
+const optionsConfig: swaggerJSDoc.Options = SWAGGER_CONFIG
 
 const swaggerSpec = swaggerJSDoc(optionsConfig)
 

@@ -1,6 +1,5 @@
 import { Router, type RequestHandler } from 'express'
-import { signup, login, logout } from '../controllers/authController'
-import { requireAuth } from '../middleware/authMiddleware'
+import { signup, login, logout, refresh } from '../controllers/authController'
 import { authEndpoints } from '../config/endpoints'
 
 const router = Router()
@@ -138,6 +137,24 @@ router.post(authEndpoints.login, login as RequestHandler)
  *            Successfully Logout
  *
  */
-router.get(authEndpoints.logout, requireAuth, logout as RequestHandler)
+router.get(authEndpoints.logout, logout as RequestHandler)
+
+/**
+ * @openapi
+ * paths:
+ *  /refresh:
+ *    get:
+ *      tags:
+ *        - User Authentication
+ *      summary: Refresh Token
+ *      description: Refresh Token
+ *      security: []
+ *      responses:
+ *        200:
+ *          description: >
+ *            New Access Token generated
+ *
+ */
+router.get('/refresh', refresh as RequestHandler)
 
 export const authRoutes = router

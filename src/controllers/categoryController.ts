@@ -5,7 +5,6 @@ import { paginateResults } from '../utils'
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
   const { title } = req.body
-
   const currentUser = res.locals.user
   try {
     const category = await CategoryModel.create({ title, created_by: currentUser._id })

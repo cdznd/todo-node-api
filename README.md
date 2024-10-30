@@ -8,6 +8,25 @@ https://mongoosejs.com/
 Authentication with JWT
 User authentication/autorization system using **jsonwebtoken, bcrypt and bodyparser**
 
+# Instructions
+To access the MongoDB container use the following command:
+docker exec -it todo-node-api-mongo-db-1 mongosh
+
+To connect with authentication use this:
+mongodb://<username>:<password>@localhost:27017/<database>?authSource=<authDatabase>
+mongodb://root:password@localhost:27017/todo-app?authSource=admin
+
+# Mongosh useful commands
+Choose the database
+- use <db_name>
+List all collections in the selected database
+- show collections
+To view data in a specific collection
+- db.<collection_name>.find().pretty()
+- - db.tickets.find().pretty()
+- - db.categories.find().pretty()
+- - db.users.find().pretty()
+
 # Development Steps
 Database
 1 - database, install/configure mongoDB.

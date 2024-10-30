@@ -220,18 +220,18 @@ describe('Authentication Routes', () => {
       it('Should return a 200 code with the current user', async () => {
         await request(app).post(authEndpoints.signup).send(userInput)
 
-        const { headers: loginHeaders } = await request(app)
+        const { headers: loginHeaders, body: loginBody } = await request(app)
           .post(`${authEndpoints.login}/?include=user`)
           .send({
             email: userInput.email,
             password: userInput.password
           })
 
-        const jwtCookie = loginHeaders['set-cookie'][0]
+        const jwtAccessToken = loginBody.accessToken
 
         const { statusCode } = await request(app)
           .get('/tickets')
-          .set('Cookie', jwtCookie)
+          .set('Authorization', `Bearer ${jwtAccessToken}`)
 
         expect(statusCode).toBe(200)
       })
