@@ -79,7 +79,7 @@ const TicketSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['In Progress', 'Todo', 'In Requirements'],
+    enum: ['In Progress', 'In Requirements'],
     required: [true, 'A valid status is required']
   },
   priority: {
