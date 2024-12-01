@@ -46,25 +46,17 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 }
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-
   const { email, password } = req.body
-
   try {
-
     const user = await UserModel.login(email, password)
-
     const { accessToken, refreshToken } = createAuthTokens(user.email)
-
-    // Refresh Token on the Cookie as httpOnly
     res.cookie('jwt', refreshToken, 
       {
-        secure: true, // HTTPS
-        httpOnly: true, // Available only for the web server
-        maxAge: 7 * 24 * 60 * 60 * 1000, // one week
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       }
     )
-
-    // Returning the AccessToken on the response
     res.status(200).json({
       accessToken
     })
@@ -77,34 +69,29 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
  * It should issue a new Access token if the refresh token is valid
  */
 export const refresh = (req: Request, res: Response, next: NextFunction): any => {
-
   const cookies = req.cookies
-
-  if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
-
-  const refreshToken = cookies.jwt
-
+  const refreshToken = cookies?.jwt
+  if (!refreshToken) return res.status(401).json({ message: 'Unauthorized' })
   jwt.verify(refreshToken, JWT_REFRESH_TOKEN_SECRET, async (err: any, decodedToken: any) => {
-    
     if(err) return res.json({ message: 'Not Authorized' })
-
     const foundUser = await UserModel.findOne({ email: decodedToken.UserInfo.email })
-
     if(!foundUser) return res.status(401).json({ message: 'Unauthorized' })
-
     const { accessToken } = createAuthTokens(foundUser.email)
-
     res.json({ accessToken })
-
   })
 }
 
 export const logout = (req: Request, res: Response): void => {
-  // removing the refresh token
-  res.cookie('jwt', '', { maxAge: 1 })
-  res.cookie('Authorization', '', { maxAge: 1 })
-  res.status(200).send('ok')
-}
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+  });
+  res.clearCookie('Authorization', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+  });
+  res.status(200).send('Logged out successfully');
+};
 
 export const testing = (req: Request, res: Response): void => {
   res.status(200).send({ item: 'Hello my frined' })
