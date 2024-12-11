@@ -7,21 +7,21 @@ import { CategoryModel } from '../models/Category'
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
   const { title, category, status, priority } = req.body
   const currentUser = res.locals.user
-
   try {
     const ticket = await TicketModel.create({ title, category, status, priority, created_by: currentUser._id })
     res.status(201).json(ticket)
   } catch (err) {
+    console.error(err)
     next(err)
   }
 }
 
-// Needs to add pagination
 export const listTickets = async (req: Request, res: Response, next: NextFunction) => {
   const { meta, links, limit, skipOffSet } = await paginateResults(TicketModel, req)
+  const currentUser = res.locals.user
   try {
     const tickets = await TicketModel
-      .find({})
+      .find({ created_by: currentUser._id })
       .populate('category')
       .skip(skipOffSet)
       .limit(limit)
