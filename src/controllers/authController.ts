@@ -1,8 +1,7 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { UserModel } from '../models/User'
 import jwt from 'jsonwebtoken'
-import { JWT_ACCESS_TOKEN_SECRET, JWT_ACCESS_TOKEN_TTL, JWT_REFRESH_TOKEN_SECRET } from '../config/app.config'
-import { type Types } from 'mongoose'
+import { JWT_ACCESS_TOKEN_SECRET, JWT_ACCESS_TOKEN_TTL, JWT_REFRESH_TOKEN_SECRET, JWT_REFRESH_TOKEN_TTL } from '../config/app.config'
 import { omit } from 'lodash'
 
 /**
@@ -22,7 +21,7 @@ const createAuthTokens = (userEmail: string): { accessToken: string, refreshToke
   // Short TTL
   const accessToken = jwt.sign(jwtPayload, JWT_ACCESS_TOKEN_SECRET, { expiresIn: JWT_ACCESS_TOKEN_TTL })
   // Long TTL, and must be saved on the database
-  const refreshToken = jwt.sign(jwtPayload, JWT_REFRESH_TOKEN_SECRET, { expiresIn: JWT_REFRESH_TOKEN_SECRET })
+  const refreshToken = jwt.sign(jwtPayload, JWT_REFRESH_TOKEN_SECRET, { expiresIn: JWT_REFRESH_TOKEN_TTL })
 
   return {
     accessToken,
