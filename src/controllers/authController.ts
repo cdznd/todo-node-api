@@ -20,9 +20,9 @@ const createAuthTokens = (userEmail: string): { accessToken: string, refreshToke
   // JWT Signing process - Makes the token secure like a stamp of authenticity of the server.
   // Sign the given payload into a Json Web Token.
   // Short TTL
-  const accessToken = jwt.sign(jwtPayload, JWT_ACCESS_TOKEN_SECRET, { expiresIn: '120s' })
+  const accessToken = jwt.sign(jwtPayload, JWT_ACCESS_TOKEN_SECRET, { expiresIn: JWT_ACCESS_TOKEN_TTL })
   // Long TTL, and must be saved on the database
-  const refreshToken = jwt.sign(jwtPayload, JWT_REFRESH_TOKEN_SECRET, { expiresIn: '1d' })
+  const refreshToken = jwt.sign(jwtPayload, JWT_REFRESH_TOKEN_SECRET, { expiresIn: JWT_REFRESH_TOKEN_SECRET })
 
   return {
     accessToken,
