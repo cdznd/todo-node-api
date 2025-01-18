@@ -16,9 +16,10 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
 
 export const listCategories = async (req: Request, res: Response, next: NextFunction) => {
   const { meta, links, limit, skipOffSet } = await paginateResults(CategoryModel, req)
+  const currentUser = res.locals.user
   try {
     const categories = await CategoryModel
-      .find({})
+      .find({ created_by: currentUser._id })
       .skip(skipOffSet)
       .limit(limit)
     const responseBody = {
@@ -38,10 +39,11 @@ export const listCategories = async (req: Request, res: Response, next: NextFunc
 
 export const getCategory = async (req: Request, res: Response, next: NextFunction) => {
   const { id: paramId } = req.params
+  const currentUser = res.locals.user
   try {
     if (mongoose.Types.ObjectId.isValid(paramId)) {
       const categoryId = new mongoose.Types.ObjectId(paramId)
-      const category = await CategoryModel.findOne({ _id: categoryId })
+      const category = await CategoryModel.findOne({ _id: categoryId, created_by: currentUser._id })
       if (category) {
         res.status(200).json(category)
       } else {

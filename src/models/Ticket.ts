@@ -77,9 +77,13 @@ const TicketSchema = new mongoose.Schema({
     ref: CategoryModel,
     required: [true, 'An existing category is required']
   },
+  description: {
+    type: String,
+    required: [true, 'Ticket needs a description']
+  },
   status: {
     type: String,
-    enum: ['In Progress', 'In Requirements'],
+    enum: ['In Progress', 'In Requirements', 'To do'],
     required: [true, 'A valid status is required']
   },
   priority: {

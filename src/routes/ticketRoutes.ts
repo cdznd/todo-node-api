@@ -1,7 +1,6 @@
 import { createTicket, listTickets, getTicket, deleteTicket, updateTicket } from '../controllers/ticketController'
 import { type RequestHandler, Router } from 'express'
 import { ticketEndpoints } from '../config/endpoints'
-import { checkUser } from '../middleware/authMiddleware'
 
 const router = Router()
 

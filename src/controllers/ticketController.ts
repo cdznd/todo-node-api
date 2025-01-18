@@ -5,10 +5,10 @@ import mongoose from 'mongoose'
 import { CategoryModel } from '../models/Category'
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
-  const { title, category, status, priority } = req.body
+  const { title, category, description, status, priority } = req.body
   const currentUser = res.locals.user
   try {
-    const ticket = await TicketModel.create({ title, category, status, priority, created_by: currentUser._id })
+    const ticket = await TicketModel.create({ title, category, description, status, priority, created_by: currentUser._id })
     res.status(201).json(ticket)
   } catch (err) {
     console.error(err)
