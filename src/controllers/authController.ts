@@ -97,12 +97,6 @@ export const testing = (req: Request, res: Response): void => {
 }
 
 export const me = async (req: Request, res: Response): Promise<void> => {
-
   const currentUser = res.locals.user
-
-  console.log('currentUser')
-  console.log(currentUser)
-
   res.status(200).send(currentUser)
-
 }

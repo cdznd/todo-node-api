@@ -20,8 +20,9 @@ export const listCategories = async (req: Request, res: Response, next: NextFunc
   try {
     const categories = await CategoryModel
       .find({ created_by: currentUser._id })
+      .sort({ createdAt: -1 })
       .skip(skipOffSet)
-      .limit(limit)
+      // .limit(limit)
     const responseBody = {
       links,
       meta: {
