@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       # Step 1: Check out the code
