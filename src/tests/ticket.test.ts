@@ -37,6 +37,7 @@ const priorityOptions = [
 const ticketInput = {
   title: 'New WebSite',
   category: categories[1],
+  description: '[]',
   status: statusOptions[0],
   priority: priorityOptions[0]
 }

@@ -242,24 +242,26 @@ describe('Authentication Routes', () => {
     describe('User logs in the account and tries to logout', () => {
       it('Should return a 200 status code with a "Succeful logout" message', async () => {
         await request(app).post(authEndpoints.signup).send(userInput)
-
         const { headers: loginHeaders } = await request(app)
           .post(authEndpoints.login)
           .send({
             email: userInput.email,
             password: userInput.password
           })
-
         const jwtCookie = loginHeaders['set-cookie'][0]
-
         const logOutRequest = await request(app)
           .get(authEndpoints.logout)
           .set('Cookie', jwtCookie)
-
-        const logOutMaxAgeMatch = logOutRequest.headers['set-cookie'][0].match(/Max-Age=(\d+)/)[0]
-
+        const cookies = logOutRequest.headers['set-cookie'];
         expect(logOutRequest.statusCode).toBe(200)
-        expect(logOutMaxAgeMatch).toBe('Max-Age=0')
+        // Assert cookies are cleared
+        expect(cookies).toBeDefined();
+        expect(cookies).toEqual(
+          expect.arrayContaining([
+            expect.stringContaining('jwt=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'),
+            expect.stringContaining('Authorization=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'),
+          ])
+        );
       })
     })
   })
