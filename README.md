@@ -1,6 +1,6 @@
 # Project Overview
-This **API** serves as the backend for the [Todo React App](https://github.com/cdznd/todo-react-app). Built using **Node.js**, **Express**, and **TypeScript**, it is designed to provide a secure environment for managing tasks in a to-do list application. The API leverages JWT (JSON Web Token) authentication with a refresh token mechanism, ensuring secure access and a smooth user experience.
-The application also leverages Swagger for API documentation, allowing developers to easily explore and interact with the available endpoints, making it easier to understand the structure and functionality of the API.
+This **API** serves as the backend for the [Todo React App](https://github.com/cdznd/todo-react-app). Built using **Node.js**, **Express**, and **TypeScript**, it is designed to provide a secure environment for managing tasks in a to-do list application. The API leverages **JWT (JSON Web Token)** authentication with a **refresh token mechanism**, ensuring secure access and a smooth user experience.
+The application also leverages **Swagger** for **API documentation**, allowing developers to easily explore and interact with the available endpoints, making it easier to understand the structure and functionality of the API.
 
 ## Key Features:
 - **JWT Authentication**: The API implements **JWT authentication** with a **refresh token** system, ensuring secure and efficient user authentication. The refresh token allows for seamless token renewal, improving security and reducing the need for users to constantly log in.
@@ -16,7 +16,7 @@ The application also leverages Swagger for API documentation, allowing developer
 - **Swagger**: Automatically generates documentation for all available API endpoints.
 - **Jest & Supertest**: Used for writing and running unit tests, ensuring the API's functionality is robust and secure.
 
-#### Overall Thoughts
+### Overall Thoughts
 This API provides a strong foundation for the Todo React App, ensuring secure user authentication, easy-to-use documentation, and high-quality code with reliable testing.
 
 ## Screenshots
