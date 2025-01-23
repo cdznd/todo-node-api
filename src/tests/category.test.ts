@@ -56,7 +56,7 @@ describe('Category routes', () => {
   describe('Creating a Category', () => {
     describe('Authorized user tests', () => {
       describe('An authorized user tries to create a new category with a valid title.', () => {
-        it.only('Should return a 201 Status code with the newly created category in the response body', async () => {
+        it('Should return a 201 Status code with the newly created category in the response body', async () => {
           const { statusCode, body } = await request(app)
             .post(categoryEndpoints.categories)
             .send(categoryInput)
