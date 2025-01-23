@@ -16,7 +16,7 @@ The application also leverages **Swagger** for **API documentation**, allowing d
 - **Swagger**: Automatically generates documentation for all available API endpoints.
 - **Jest & Supertest**: Used for writing and running unit tests, ensuring the API's functionality is robust and secure.
 
-### Overall Thoughts
+## Overall Thoughts
 This API provides a strong foundation for the Todo React App, ensuring secure user authentication, easy-to-use documentation, and high-quality code with reliable testing.
 
 ## Screenshots
@@ -27,7 +27,7 @@ Follow these steps to run the application locally:
 
 ---
 
-### development notes
+## development notes
 
 https://mongoosejs.com/
 
