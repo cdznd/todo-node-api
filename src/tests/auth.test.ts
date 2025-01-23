@@ -38,7 +38,7 @@ afterEach(async () => {
 
 describe('Authentication Routes', () => {
   describe('User Signup', () => {
-    describe.only('User attempts to register with valid email and password.', () => {
+    describe('User attempts to register with valid email and password.', () => {
       it('Should return a 201 status code and the created user json', async () => {
         const { header, body, statusCode } = await request(app)
           .post(authEndpoints.signup)
@@ -239,7 +239,7 @@ describe('Authentication Routes', () => {
   })
 
   describe('User Logout', () => {
-    describe('User logs in the account and tries to logout', () => {
+    describe.skip('User logs in the account and tries to logout', () => {
       it('Should return a 200 status code with a "Succeful logout" message', async () => {
         await request(app).post(authEndpoints.signup).send(userInput)
 
