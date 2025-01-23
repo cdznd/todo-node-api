@@ -84,12 +84,16 @@ export const logout = (req: Request, res: Response): void => {
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    path: '/'
   });
   res.clearCookie('Authorization', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    path: '/'
   });
-  res.status(200).send('Logged out successfully');
+  // console.log(`User with IP ${req.ip} logged out`);
+  // Send a consistent JSON response
+  res.status(200).json({ message: 'Logged out successfully' });
 };
 
 export const testing = (req: Request, res: Response): void => {
