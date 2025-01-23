@@ -86,7 +86,7 @@ afterEach(async () => {
   await mongoose.connection.collection('tickets').deleteMany({})
 })
 
-describe.skip('Tickets Routes', () => {
+describe('Tickets Routes', () => {
   describe('Creating a Ticket', () => {
     describe('Authorized user tests', () => {
       describe('User tries to create a new ticket providing all valid data.', () => {

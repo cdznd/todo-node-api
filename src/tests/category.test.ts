@@ -52,7 +52,7 @@ afterEach(async () => {
   await mongoose.connection.collection('categories').deleteMany({})
 })
 
-describe.skip('Category routes', () => {
+describe('Category routes', () => {
   describe('Creating a Category', () => {
     describe('Authorized user tests', () => {
       describe('An authorized user tries to create a new category with a valid title.', () => {
