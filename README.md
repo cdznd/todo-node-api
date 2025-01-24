@@ -22,11 +22,11 @@ This API provides a strong foundation for the Todo React App, ensuring secure us
 ## Screenshots
 Here you can see some visuals of the app in action:
 <div>
-  <img width="48%" height="300px" alt="image" src="https://github.com/user-attachments/assets/7d2d8b44-cc4c-4361-a6ad-aa8587a60923" />
-  <img width="48%" height="300px" alt="image" src="https://github.com/user-attachments/assets/f85538d3-0f41-4e8a-af5c-caf42374dfb5" />
-</div>
-<div>
-    <img width="48%" height="300px" alt="image" src="https://github.com/user-attachments/assets/c62be1bd-ea42-472d-a07f-356284c8bdff" />
+  <img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/7d2d8b44-cc4c-4361-a6ad-aa8587a60923" />
+  <hr>
+  <img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/f85538d3-0f41-4e8a-af5c-caf42374dfb5" />
+  <hr>
+  <img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/c62be1bd-ea42-472d-a07f-356284c8bdff" />
 </div>
 
 
@@ -106,7 +106,7 @@ JSON Web Tokens is a method for authenticating users in Web Applications. It all
 - JWTs can be signed using a **secret** or a public/private key pair.
 - **Signed Tokens**
 
-![image](https://github.com/user-attachments/assets/46cb9dc4-5190-4caa-96c9-2b4671033cf3)
+<img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/46cb9dc4-5190-4caa-96c9-2b4671033cf3" />
 
 After signing the cookie to the browser, every request made from the browser will have the token, so the server now can verify the JWT token and identify the user.
 Saving Token in cookies potentially opens up your site to cross-site request forgery attacks. That means that malicious sites can take a user’s authentication cookie and then make requests to our server posing as our user.
@@ -139,7 +139,7 @@ HMACSHA256(
 )
 ```
 
-![image](https://github.com/user-attachments/assets/2e794417-208b-4517-9f66-4d69a1199254)
+<img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/2e794417-208b-4517-9f66-4d69a1199254" />
 
 - After Creating the Signature.
 - Combine the Base64Url-encoded header, payload and signature using dots to the create the JWT.
