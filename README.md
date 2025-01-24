@@ -57,6 +57,7 @@ Make sure you have the following installed:
      Make sure you have Node.js v20.11.0 installed. Then, run:
     ```bash
     npm install
+    npm test (checking if all the api components are working fine)
     npm start
     ```
 4. **Access the API Docs**:
