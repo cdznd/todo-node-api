@@ -5,7 +5,7 @@ The application also leverages **Swagger** for **API documentation**, allowing d
 ## Key Features:
 - **JWT Authentication**: The API implements **JWT authentication** with a **refresh token** system, ensuring secure and efficient user authentication. The refresh token allows for seamless token renewal, improving security and reducing the need for users to constantly log in.
 - **Swagger Documentation**: The API includes **Swagger** documentation for easy understanding and interaction with the available endpoints. It is automatically generated using **swagger-jsdoc** and **swagger-ui-express**, allowing developers and users to explore the API with ease.
-- **Unit Tests**: The API features **high coverage with unit tests**, written using **Jest**. This ensures the functionality of the API is completely validated, and it is maintainable and scalable in the long run.
+- **Unit Tests**: The API features **reasonable coverage with unit tests**, written using **Jest**. This ensures the functionality of the API is completely validated, and it is maintainable and scalable in the long run.
 - **TypeScript Best Practices**: The project stick to **TypeScript best practices**, ensuring strong typing, clean code, and improved maintainability. TypeScript helps catch errors early and improves developer experience with enhanced code autocompletion and validation.
 - **MongoDB**: The API integrates with **MongoDB** for data persistence, ensuring a flexible and scalable database solution. The project also includes a **Mongo Express** web-based admin interface for easy database management and monitoring through a user-friendly dashboard.
 
@@ -21,14 +21,15 @@ This API provides a strong foundation for the Todo React App, ensuring secure us
 
 ## Screenshots
 Here you can see some visuals of the app in action:
-<div>
-  <img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/7d2d8b44-cc4c-4361-a6ad-aa8587a60923" />
-  <hr>
-  <img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/f85538d3-0f41-4e8a-af5c-caf42374dfb5" />
-  <hr>
-  <img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/c62be1bd-ea42-472d-a07f-356284c8bdff" />
-</div>
 
+![Screenshot 1](https://github.com/user-attachments/assets/7d2d8b44-cc4c-4361-a6ad-aa8587a60923)
+---
+![Screenshot 2](https://github.com/user-attachments/assets/f85538d3-0f41-4e8a-af5c-caf42374dfb5)
+---
+![Screenshot 3](https://github.com/user-attachments/assets/c62be1bd-ea42-472d-a07f-356284c8bdff)
+---
+![Screenshot 4](https://github.com/user-attachments/assets/8356b9f3-e6d5-4840-89dd-a377e5e97b41)
+---
 
 ## Installation Guide
 Follow these steps to run the application locally:
@@ -106,7 +107,7 @@ JSON Web Tokens is a method for authenticating users in Web Applications. It all
 - JWTs can be signed using a **secret** or a public/private key pair.
 - **Signed Tokens**
 
-<img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/46cb9dc4-5190-4caa-96c9-2b4671033cf3" />
+![Screenshot](https://github.com/user-attachments/assets/46cb9dc4-5190-4caa-96c9-2b4671033cf3)
 
 After signing the cookie to the browser, every request made from the browser will have the token, so the server now can verify the JWT token and identify the user.
 Saving Token in cookies potentially opens up your site to cross-site request forgery attacks. That means that malicious sites can take a user’s authentication cookie and then make requests to our server posing as our user.
@@ -139,7 +140,8 @@ HMACSHA256(
 )
 ```
 
-<img width="100%" height="450px" alt="image" src="https://github.com/user-attachments/assets/2e794417-208b-4517-9f66-4d69a1199254" />
+![Screenshot](https://github.com/user-attachments/assets/2e794417-208b-4517-9f66-4d69a1199254)
+
 
 - After Creating the Signature.
 - Combine the Base64Url-encoded header, payload and signature using dots to the create the JWT.
