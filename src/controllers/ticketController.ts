@@ -4,7 +4,11 @@ import { paginateResults } from '../utils'
 import mongoose from 'mongoose'
 import { CategoryModel } from '../models/Category'
 
-export const createTicket = async (req: Request, res: Response, next: NextFunction) => {
+export const createTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { title, category, description, status, priority } = req.body
   const currentUser = res.locals.user
   try {
@@ -16,7 +20,11 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
   }
 }
 
-export const listTickets = async (req: Request, res: Response, next: NextFunction) => {
+export const listTickets = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { meta, links, limit, skipOffSet } = await paginateResults(TicketModel, req)
   const currentUser = res.locals.user
   try {
@@ -40,7 +48,11 @@ export const listTickets = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export const getTicket = async (req: Request, res: Response, next: NextFunction) => {
+export const getTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { ticketId } = req.params
   const currentUser = res.locals.user
   try {
@@ -59,17 +71,17 @@ export const getTicket = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
-export const updateTicket = async (req: Request, res: Response, next: NextFunction) => {
+export const updateTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const currentUser = res.locals.user
   const { ticketId } = req.params
-
   const categoryId = new mongoose.Types.ObjectId(req.body.category)
-
   const category = await CategoryModel.findOne({ _id: categoryId })
-
   if (category) {
     const newTicket = { ...req.body, category: category._id }
-
     try {
       if (mongoose.Types.ObjectId.isValid(ticketId)) {
         const ticket = await TicketModel.findOneAndUpdate({ _id: ticketId, created_by: currentUser._id }, newTicket, { new: true })
@@ -89,13 +101,16 @@ export const updateTicket = async (req: Request, res: Response, next: NextFuncti
   }
 }
 
-export const deleteTicket = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { ticketId } = req.params
   const currentUser = res.locals.user
   try {
     if (mongoose.Types.ObjectId.isValid(ticketId)) {
       const ticketExists = await TicketModel.find({ _id: ticketId, created_by: currentUser._id })
-
       if (ticketExists) {
         const deleteStatus = await TicketModel.deleteOne({ _id: ticketId })
         res.status(200).json(deleteStatus)
