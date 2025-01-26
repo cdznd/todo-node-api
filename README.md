@@ -30,6 +30,8 @@ Here you can see some visuals of the app in action:
 ---
 ![Screenshot 4](https://github.com/user-attachments/assets/8356b9f3-e6d5-4840-89dd-a377e5e97b41)
 ---
+Here
+---
 
 ## Installation Guide
 Follow these steps to run the application locally:
