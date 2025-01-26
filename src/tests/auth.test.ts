@@ -220,7 +220,7 @@ describe('Authentication Routes', () => {
       it('Should return a 200 code with the current user', async () => {
         await request(app).post(authEndpoints.signup).send(userInput)
 
-        const { headers: loginHeaders, body: loginBody } = await request(app)
+        const { body: loginBody } = await request(app)
           .post(`${authEndpoints.login}/?include=user`)
           .send({
             email: userInput.email,
@@ -252,16 +252,16 @@ describe('Authentication Routes', () => {
         const logOutRequest = await request(app)
           .get(authEndpoints.logout)
           .set('Cookie', jwtCookie)
-        const cookies = logOutRequest.headers['set-cookie'];
+        const cookies = logOutRequest.headers['set-cookie']
         expect(logOutRequest.statusCode).toBe(200)
         // Assert cookies are cleared
-        expect(cookies).toBeDefined();
+        expect(cookies).toBeDefined()
         expect(cookies).toEqual(
           expect.arrayContaining([
             expect.stringContaining('jwt=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'),
-            expect.stringContaining('Authorization=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'),
+            expect.stringContaining('Authorization=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly')
           ])
-        );
+        )
       })
     })
   })

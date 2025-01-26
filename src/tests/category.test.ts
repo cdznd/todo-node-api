@@ -20,7 +20,7 @@ const userInput = {
 
 // Auth
 let jwtAccessToken: any
-let authenticatedUserId: any
+// let authenticatedUserId: any
 // DB
 let dbServer: any
 
@@ -33,7 +33,7 @@ beforeAll(async () => {
 
   // Creating a new user
   await request(app).post(authEndpoints.signup).send(userInput)
-  const { headers, body: bodyUser } = await request(app).post(`${authEndpoints.login}/?include=user`).send({
+  const { body: bodyUser } = await request(app).post(`${authEndpoints.login}/?include=user`).send({
     email: userInput.email,
     password: userInput.password
   })
@@ -210,7 +210,6 @@ describe('Category routes', () => {
           expect(statusCode).toBe(statusCode)
           expect(body).toHaveProperty('title')
           expect(body.title).toBe(createdCategories[0].title)
-          // expect(body.created_by).toBe(authenticatedUserId)
         })
 
         // TODO
