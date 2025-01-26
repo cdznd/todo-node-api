@@ -47,7 +47,6 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, password } = req.body
   try {
-    /* eslint-disable-next-line @typescript-eslint/await-thenable */
     const user = await UserModel.login(email, password)
     const { accessToken, refreshToken } = createAuthTokens(user.email)
     res.cookie('jwt', refreshToken,
