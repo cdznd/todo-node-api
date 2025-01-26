@@ -3,7 +3,11 @@ import { CategoryModel } from '../models/Category'
 import mongoose from 'mongoose'
 import { paginateResults } from '../utils'
 
-export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const createCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { title } = req.body
   const currentUser = res.locals.user
   try {
@@ -14,7 +18,11 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
   }
 }
 
-export const listCategories = async (req: Request, res: Response, next: NextFunction) => {
+export const listCategories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { meta, links, limit, skipOffSet } = await paginateResults(CategoryModel, req)
   const currentUser = res.locals.user
   try {
@@ -38,7 +46,11 @@ export const listCategories = async (req: Request, res: Response, next: NextFunc
   }
 }
 
-export const getCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const getCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id: paramId } = req.params
   const currentUser = res.locals.user
   try {
@@ -58,20 +70,20 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const updateCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { title } = req.body
   const { id: paramId } = req.params
-
   try {
     if (mongoose.Types.ObjectId.isValid(paramId)) {
       const categoryId = new mongoose.Types.ObjectId(paramId)
-
       const categoryExists = await CategoryModel.findOne({ _id: categoryId })
-
       if (!categoryExists) {
         res.status(404).json('Category not found')
       }
-
       const newCategory = await CategoryModel.updateOne({ _id: categoryId }, { title })
       res.status(201).json(newCategory)
     } else {
@@ -82,16 +94,17 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
   }
 }
 
-export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id: categoryId } = req.params
-
   try {
     const categoryExists = await CategoryModel.findOne({ _id: categoryId })
-
     if (!categoryExists) {
       res.status(404).json('Category not found')
     }
-
     const deleteStatus = await CategoryModel.deleteOne({ _id: categoryId })
     res.status(200).json(deleteStatus)
   } catch (err) {
