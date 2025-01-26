@@ -71,6 +71,7 @@ export const refresh = (req: Request, res: Response, next: NextFunction): any =>
   const cookies = req.cookies
   const refreshToken = cookies?.jwt
   if (!refreshToken) return res.status(401).json({ message: 'Unauthorized' })
+  /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
   jwt.verify(refreshToken, JWT_REFRESH_TOKEN_SECRET, async (err: any, decodedToken: any) => {
     if (err) return res.json({ message: 'Not Authorized' })
     const foundUser = await UserModel.findOne({ email: decodedToken.UserInfo.email })

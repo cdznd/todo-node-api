@@ -13,6 +13,7 @@ export const checkUser: RequestHandler = (req: Request, res: Response, next: Nex
   if (!(authHeader as string).startsWith('Bearer')) return res.status(400).json('Authentication credentials were not provided.')
   const token = (authHeader as string).split(' ')[1]
   if (token) {
+    /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
     jwt.verify(token, JWT_ACCESS_TOKEN_SECRET, async (err: any, decodedToken: any) => {
       try {
         if (err) {
