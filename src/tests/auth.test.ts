@@ -220,7 +220,7 @@ describe('Authentication Routes', () => {
       it('Should return a 200 code with the current user', async () => {
         await request(app).post(authEndpoints.signup).send(userInput)
 
-        const { headers: loginHeaders, body: loginBody } = await request(app)
+        const { body: loginBody } = await request(app)
           .post(`${authEndpoints.login}/?include=user`)
           .send({
             email: userInput.email,

@@ -44,7 +44,7 @@ const ticketInput = {
 
 // Auth
 let jwtAccessToken: any
-let authenticatedUserId: any
+// let authenticatedUserId: any
 // DB
 let dbServer: any
 // Sample data
@@ -59,7 +59,7 @@ beforeAll(async () => {
 
   // Creating a new user
   await request(app).post(authEndpoints.signup).send(userInput)
-  const { headers, body: bodyUser } = await request(app).post(`${authEndpoints.login}`).send({
+  const { body: bodyUser } = await request(app).post(`${authEndpoints.login}`).send({
     email: userInput.email,
     password: userInput.password
   })
@@ -370,7 +370,6 @@ describe('Tickets Routes', () => {
           expect(body.category).toBe(categoryBody._id)
           expect(body.status).toBe(newTicket.status)
           expect(body.priority).toBe(newTicket.priority)
-          // expect(body.created_by).toBe(authenticatedUserId)
         })
       })
 

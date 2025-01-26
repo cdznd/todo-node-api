@@ -1,7 +1,6 @@
 import { Router, type RequestHandler } from 'express'
 import { createCategory, listCategories, getCategory, updateCategory, deleteCategory } from '../controllers/categoryController'
 import { categoryEndpoints } from '../config/endpoints'
-import { checkUser } from '../middleware/authMiddleware'
 
 const router = Router()
 
