@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-20.04
 
     steps:
@@ -28,5 +28,5 @@ jobs:
         run: npm install
 
       # Step 4: Run tests
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
