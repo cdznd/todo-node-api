@@ -49,7 +49,6 @@ const router = Router()
  *                type: integer
  */
 
-
 /**
  * @openapi
  * paths:

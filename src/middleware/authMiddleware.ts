@@ -26,13 +26,12 @@ import { UserModel } from '../models/User'
  * If the cookies exists on the request we set a user on the response.locals.user, if not we set it to null
  */
 export const checkUser: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-
   // Authorization Header here
   const authHeader = req.headers.authorization || req.headers.Authorization || ''
 
-  if(!(<string>authHeader).startsWith('Bearer')) return res.status(400).json('Authentication credentials were not provided.')
+  if (!(authHeader as string).startsWith('Bearer')) return res.status(400).json('Authentication credentials were not provided.')
 
-  const token = (<string>authHeader).split(' ')[1]
+  const token = (authHeader as string).split(' ')[1]
 
   if (token) {
     jwt.verify(token, JWT_ACCESS_TOKEN_SECRET, async (err: any, decodedToken: any) => {

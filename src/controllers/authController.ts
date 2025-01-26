@@ -6,12 +6,12 @@ import { omit } from 'lodash'
 
 /**
  * This function must create an Access and a Refresh Token.
- */ 
-const createAuthTokens = (userEmail: string): { accessToken: string, refreshToken: string} => {
+ */
+const createAuthTokens = (userEmail: string): { accessToken: string, refreshToken: string } => {
   // Payload: Used to identify the user (e.g user_id).
   // It's data that is enconded into the JWT.
   // It's important that no sensitive data must be stored here
-  const jwtPayload = { 
+  const jwtPayload = {
     UserInfo: {
       email: userEmail
     }
@@ -49,11 +49,11 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const user = await UserModel.login(email, password)
     const { accessToken, refreshToken } = createAuthTokens(user.email)
-    res.cookie('jwt', refreshToken, 
+    res.cookie('jwt', refreshToken,
       {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000
       }
     )
     res.status(200).json({
@@ -72,9 +72,9 @@ export const refresh = (req: Request, res: Response, next: NextFunction): any =>
   const refreshToken = cookies?.jwt
   if (!refreshToken) return res.status(401).json({ message: 'Unauthorized' })
   jwt.verify(refreshToken, JWT_REFRESH_TOKEN_SECRET, async (err: any, decodedToken: any) => {
-    if(err) return res.json({ message: 'Not Authorized' })
+    if (err) return res.json({ message: 'Not Authorized' })
     const foundUser = await UserModel.findOne({ email: decodedToken.UserInfo.email })
-    if(!foundUser) return res.status(401).json({ message: 'Unauthorized' })
+    if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
     const { accessToken } = createAuthTokens(foundUser.email)
     res.json({ accessToken })
   })
@@ -85,16 +85,16 @@ export const logout = (req: Request, res: Response): void => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     path: '/'
-  });
+  })
   res.clearCookie('Authorization', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     path: '/'
-  });
+  })
   // console.log(`User with IP ${req.ip} logged out`);
   // Send a consistent JSON response
-  res.status(200).json({ message: 'Logged out successfully' });
-};
+  res.status(200).json({ message: 'Logged out successfully' })
+}
 
 export const testing = (req: Request, res: Response): void => {
   res.status(200).send({ item: 'Hello my frined' })
