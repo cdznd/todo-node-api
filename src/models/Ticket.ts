@@ -67,39 +67,41 @@ interface TicketModelInterface extends Model<TicketDocumentInterface> {
  *     createdAt: 2023-11-05T12:34:56.789Z
  *     updatedAt: 2023-11-05T12:34:56.789Z
  */
-const TicketSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Title is required']
+const TicketSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, 'Title is required']
+    },
+    category: {
+      type: Schema.ObjectId,
+      ref: CategoryModel,
+      required: [true, 'An existing category is required']
+    },
+    description: {
+      type: String,
+      required: [true, 'Ticket needs a description']
+    },
+    status: {
+      type: String,
+      enum: ['IN_PROGRESS', 'IN_REQUIREMENTS', 'TO_DO'],
+      required: [true, 'A valid status is required']
+    },
+    priority: {
+      type: String,
+      enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
+      required: [true, 'Priority field is required']
+    },
+    created_by: {
+      type: Schema.ObjectId,
+      ref: UserModel,
+      required: [true, 'Must be logged in to create a ticket']
+    }
   },
-  category: {
-    type: Schema.ObjectId,
-    ref: CategoryModel,
-    required: [true, 'An existing category is required']
-  },
-  description: {
-    type: String,
-    required: [true, 'Ticket needs a description']
-  },
-  status: {
-    type: String,
-    enum: ['In Progress', 'In Requirements', 'To do'],
-    required: [true, 'A valid status is required']
-  },
-  priority: {
-    type: String,
-    enum: ['Low', 'Medium', 'High', 'Critical'],
-    required: [true, 'Priority field is required']
-  },
-  created_by: {
-    type: Schema.ObjectId,
-    ref: UserModel,
-    required: [true, 'Must be logged in to create a ticket']
+  {
+    timestamps: true
   }
-},
-{
-  timestamps: true
-})
+)
 
 TicketSchema.pre('save', async function (next) {
   try {
