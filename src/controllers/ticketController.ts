@@ -25,24 +25,22 @@ export const listTickets = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { meta, links, limit, skipOffSet } = await paginateResults(TicketModel, req)
   const currentUser = res.locals.user
   try {
-    const tickets = await TicketModel
-      .find({ created_by: currentUser._id })
-      .populate('category')
-      .skip(skipOffSet)
-      .limit(limit)
-    const responseBody = {
-      links,
-      meta: {
-        totalItems: meta.totalItems,
-        totalPages: meta.totalPages,
-        page: meta.page
+    const tickets = await TicketModel.aggregate([
+      {
+        $match: { created_by: currentUser._id } // Filter by user
       },
-      data: tickets
-    }
-    res.status(200).json(responseBody)
+      {
+        $group: {
+          _id: "$status", // Group by status
+          count: { $sum: 1 }, // Count tickets per status
+          tickets: { $push: "$$ROOT" } // Push full ticket data
+        }
+      },
+      { $sort: { _id: 1 } } // Optional: Sort by status
+    ]);
+    res.status(200).json({ data: tickets });
   } catch (err) {
     next(err)
   }
