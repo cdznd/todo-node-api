@@ -169,13 +169,6 @@ HMACSHA256(
 - **/logout** GET log out current user
 - **/refresh** GET to get a new access token
 
-**Express specific**
-- Extract routes into a separate folder.
-- Import express’s **Router**.
-- Export extracted routes as **Router**.
-- Use the extracted router as a middleware in the app.
-- Link to the AuthController methods.
-
 ### User Model
 Create a user model with **moongose**.
 - Setup model **schema**. creating a new **moongose** Schema object.
