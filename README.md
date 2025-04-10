@@ -1,4 +1,4 @@
-# Project Overview
+# Todo Node Express.JS API
 This **API** serves as the backend for the [Todo React App](https://github.com/cdznd/todo-react-app). Built using **Node.js**, **Express**, and **TypeScript**, it is designed to provide a secure environment for managing tasks in a to-do list application. The API leverages **JWT (JSON Web Token)** authentication with a **refresh token mechanism**, ensuring secure access and a smooth user experience.
 The application also leverages **Swagger** for **API documentation**, allowing developers to easily explore and interact with the available endpoints, making it easier to understand the structure and functionality of the API.
 
