@@ -22,16 +22,19 @@ This API provides a strong foundation for the Todo React App, ensuring secure us
 ## Screenshots
 Here you can see some visuals of the app in action:
 
-![Screenshot 1](https://github.com/user-attachments/assets/7d2d8b44-cc4c-4361-a6ad-aa8587a60923)
----
-![Screenshot 2](https://github.com/user-attachments/assets/f85538d3-0f41-4e8a-af5c-caf42374dfb5)
----
-![Screenshot 3](https://github.com/user-attachments/assets/c62be1bd-ea42-472d-a07f-356284c8bdff)
----
-![Screenshot 4](https://github.com/user-attachments/assets/8356b9f3-e6d5-4840-89dd-a377e5e97b41)
----
-![Screenshot 5](https://github.com/user-attachments/assets/ec4b81e0-211c-448e-ada4-878d596af797)
----
+<p align="center">
+  <table>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/7d2d8b44-cc4c-4361-a6ad-aa8587a60923" alt="" width="500"></td>
+      <td><img src="https://github.com/user-attachments/assets/f85538d3-0f41-4e8a-af5c-caf42374dfb5" alt="" width="500"></td>
+    </tr>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/c62be1bd-ea42-472d-a07f-356284c8bdff" alt="" width="500"></td>
+      <td><img src="https://github.com/user-attachments/assets/8356b9f3-e6d5-4840-89dd-a377e5e97b41" alt="" width="500"></td>
+    </tr>
+  </table>
+</p>
+
 
 ## Installation Guide
 Follow these steps to run the application locally:
